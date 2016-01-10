@@ -34,8 +34,6 @@ namespace Roboworks.HueManager.Services
 
     public class BandService : IBandService, IDisposable
     {
-        private readonly Func<Action, Task> _dispatcherInvoke;
-
         private IBandInfo _pairedBand = null;
         private IBandClient _bandClient = null;
 
@@ -80,17 +78,7 @@ namespace Roboworks.HueManager.Services
         }
 
 #endregion
-
-        public BandService(Func<Action, Task> dispatcherInvoke)
-        {
-            if (dispatcherInvoke == null)
-            {
-                throw new ArgumentNullException(nameof(dispatcherInvoke));
-            }
-
-            this._dispatcherInvoke = dispatcherInvoke;
-        }
-
+        
 #region Public Methods
 
         public async Task Initialize()
@@ -375,7 +363,7 @@ namespace Roboworks.HueManager.Services
             object sender, 
             BandTileEventArgs<IBandTileButtonPressedEvent> e)
         {
-            await this._dispatcherInvoke.Invoke(
+            await DispatcherHelper.Invoke(
                 () => this.TileButtonPressedProcess(e.TileEvent.PageId, e.TileEvent.ElementId)
             );
         }

@@ -21,24 +21,15 @@ using Roboworks.HueManager.ViewModels;
 using Roboworks.HueManager.Services;
 using Roboworks.Hue;
 
-namespace Roboworks.HueManager
+namespace Roboworks.HueManager.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private MainViewModel _viewModel;
-
         public MainPage()
         {
-            this._viewModel = 
-                new MainViewModel(
-                    new BandService(this.DispatherInvoke), 
-                    new HueService()
-                );
-            this.DataContext = this._viewModel;
-
             this.InitializeComponent();
         }
 
@@ -46,17 +37,16 @@ namespace Roboworks.HueManager
         {
             try
             {
-                await this._viewModel.Initialize();
+                var viewModel = this.DataContext as MainPageViewModel;
+                if (viewModel != null)
+                {
+                    await viewModel.Initialize();
+                }
             }
             catch(Exception ex)
             {
                 ExceptionHandler.Handle(ex);
             }
-        }
-        
-        private async Task DispatherInvoke(Action action)
-        {
-            await this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(action));
         }
     }
 }

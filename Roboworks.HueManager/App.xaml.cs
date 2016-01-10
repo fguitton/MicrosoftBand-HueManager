@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -15,94 +18,105 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Microsoft.Practices.Unity;
+
+using Prism.Unity.Windows;
+using Prism.Windows.AppModel;
+using Prism.Windows.Navigation;
+using Prism.Mvvm;
+using Prism.Logging;
+
+using Roboworks.HueManager.Views;
+using Roboworks.HueManager.ViewModels;
+using Roboworks.Hue;
+using Roboworks.HueManager.Services;
+
 namespace Roboworks.HueManager
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
-    sealed partial class App : Application
+    using ViewNameToTypeMapping = KeyValuePair<string, Type>;
+    using ViewTypeToViewModelTypeMapping = KeyValuePair<Type, Type>;
+
+    sealed partial class App : PrismUnityApplication
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
+        private readonly ImmutableDictionary<string, Type> _viewNameToTypeMappings =
+            new ViewNameToTypeMapping[]
+            {
+                new ViewNameToTypeMapping(ViewNames.Main, typeof(MainPage))
+            }
+            .ToImmutableDictionary();
+
+        private readonly ImmutableDictionary<Type, Type> _viewTypeToViewModelTypeMappings =
+            new ViewTypeToViewModelTypeMapping[]
+            {
+                new ViewTypeToViewModelTypeMapping(typeof(MainPage), typeof(MainPageViewModel))
+            }
+            .ToImmutableDictionary();
+
         public App()
         {
-            Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
-                Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
-                Microsoft.ApplicationInsights.WindowsCollectors.Session);
+            this.UnhandledException += this.Application_UnhandledException;
+
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        //TODO: Implement ILoggerFacade
+        protected override ILoggerFacade CreateLogger()
         {
-
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
-
-            Frame rootFrame = Window.Current.Content as Frame;
-
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
-            if (rootFrame == null)
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-
-                rootFrame.NavigationFailed += OnNavigationFailed;
-
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: Load state from previously suspended application
-                }
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
-
-            if (rootFrame.Content == null)
-            {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
-            }
-            // Ensure the current window is active
-            Window.Current.Activate();
+            return base.CreateLogger();
         }
 
-        /// <summary>
-        /// Invoked when Navigation to a certain page fails
-        /// </summary>
-        /// <param name="sender">The Frame which failed navigation</param>
-        /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            this.NavigationService.Navigate(ViewNames.Main, null);
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
-        /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        protected override void ConfigureViewModelLocator()
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
+            ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver(
+                (type) => this._viewTypeToViewModelTypeMappings[type]
+            );
+            ViewModelLocationProvider.SetDefaultViewModelFactory((type) => this.Resolve(type));
         }
+
+        protected override INavigationService OnCreateNavigationService(IFrameFacade rootFrame)
+        {
+            return new FrameNavigationService(rootFrame, this.ViewTypeGetter, this.SessionStateService);
+        }
+
+        protected override void ConfigureContainer()
+        {
+            base.ConfigureContainer();
+
+            this.RegisterAsSingleton<IHueService, HueService>();
+            this.RegisterAsSingleton<IBandService, BandService>();
+
+            this.RegisterAsSingleton<MainPage>(ViewNames.Main);
+        }
+
+#region Private Methods
+
+        private void Application_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ExceptionHandler.Handle(e.Exception);
+        }
+
+        private Type ViewTypeGetter(string viewName)
+        {
+            return this._viewNameToTypeMappings[viewName];
+        }
+
+        private void RegisterAsSingleton<T>(string name)
+        {
+            this.Container.RegisterType<T>(name, new ContainerControlledLifetimeManager());
+        }
+
+        private void RegisterAsSingleton<TFrom, TTo>() where TTo : TFrom
+        {
+            this.Container.RegisterType<TFrom, TTo>(new ContainerControlledLifetimeManager());
+        }
+
+#endregion
+
     }
 }

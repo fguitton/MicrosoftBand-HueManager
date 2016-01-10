@@ -15,7 +15,7 @@ using Roboworks.Hue;
 
 namespace Roboworks.HueManager.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public class MainPageViewModel : BindableBase
     {
         private const double BrightnessStep = 0.1d;
 
@@ -91,7 +91,7 @@ namespace Roboworks.HueManager.ViewModels
 
 #endregion
         
-        public MainViewModel(IBandService bandService, IHueService hueService)
+        public MainPageViewModel(IBandService bandService, IHueService hueService)
         {
             if (bandService == null)
             {
@@ -232,7 +232,7 @@ namespace Roboworks.HueManager.ViewModels
                     async (hueLightBulb) =>
                         await this._hueService.LightBulbBrightnessSet(
                             e.BulbId, 
-                            Math.Max(0d, hueLightBulb.Brightness - MainViewModel.BrightnessStep)
+                            Math.Max(0d, hueLightBulb.Brightness - MainPageViewModel.BrightnessStep)
                         )
                 );
         }
@@ -245,7 +245,7 @@ namespace Roboworks.HueManager.ViewModels
                     async (hueLightBulb) =>
                         await this._hueService.LightBulbBrightnessSet(
                             e.BulbId, 
-                            Math.Min(1d, hueLightBulb.Brightness + MainViewModel.BrightnessStep)
+                            Math.Min(1d, hueLightBulb.Brightness + MainPageViewModel.BrightnessStep)
                         )
                 );
         }
