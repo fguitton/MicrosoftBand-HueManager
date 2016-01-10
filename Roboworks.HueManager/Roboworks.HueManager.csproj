@@ -102,12 +102,20 @@
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="DispatcherFacade.cs" />
     <Compile Include="ExceptionHandler.cs" />
-    <Compile Include="Views\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="ViewModels\BandSetupViewModel.cs" />
+    <Compile Include="ViewModels\HueSetupViewModel.cs" />
+    <Compile Include="Views\BandSetupView.xaml.cs">
+      <DependentUpon>BandSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HueSetupView.xaml.cs">
+      <DependentUpon>HueSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BandService.cs" />
-    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -130,7 +138,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\MainPage.xaml">
+    <Page Include="Views\BandSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HueSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -140,6 +156,11 @@
       <Project>{30a592fc-ba3f-4ad3-bbbc-01c1a07b0a3f}</Project>
       <Name>Roboworks.Hue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsMobile, Version=10.0.10586.0">
+      <Name>Windows Mobile Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

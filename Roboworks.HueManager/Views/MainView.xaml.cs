@@ -26,27 +26,27 @@ namespace Roboworks.HueManager.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainView : Page
     {
-        public MainPage()
+        public MainView()
         {
             this.InitializeComponent();
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var viewModel = this.DataContext as MainPageViewModel;
-                if (viewModel != null)
-                {
-                    await viewModel.Initialize();
-                }
-            }
-            catch(Exception ex)
-            {
-                ExceptionHandler.Handle(ex);
-            }
-        }
+        //private async void Page_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var viewModel = this.DataContext as MainViewModel;
+        //        if (viewModel != null)
+        //        {
+        //            await viewModel.Initialize();
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        ExceptionHandler.Handle(ex);
+        //    }
+        //}
     }
 }

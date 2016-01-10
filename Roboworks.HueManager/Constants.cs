@@ -9,5 +9,7 @@ namespace Roboworks.HueManager
     public static class ViewNames
     {
         public const string Main = "Main";
+        public const string HueSetup = "HueSetup";
+        public const string BandSetup = "BandSetup";
     }
 }

@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Foundation.Metadata;
+using Windows.Phone.UI.Input;
 
 using Microsoft.Practices.Unity;
 
@@ -41,14 +43,18 @@ namespace Roboworks.HueManager
         private readonly ImmutableDictionary<string, Type> _viewNameToTypeMappings =
             new ViewNameToTypeMapping[]
             {
-                new ViewNameToTypeMapping(ViewNames.Main, typeof(MainPage))
+                new ViewNameToTypeMapping(ViewNames.Main, typeof(MainView)),
+                new ViewNameToTypeMapping(ViewNames.HueSetup, typeof(HueSetupView)),
+                new ViewNameToTypeMapping(ViewNames.BandSetup, typeof(BandSetupView))
             }
             .ToImmutableDictionary();
 
         private readonly ImmutableDictionary<Type, Type> _viewTypeToViewModelTypeMappings =
             new ViewTypeToViewModelTypeMapping[]
             {
-                new ViewTypeToViewModelTypeMapping(typeof(MainPage), typeof(MainPageViewModel))
+                new ViewTypeToViewModelTypeMapping(typeof(MainView), typeof(MainViewModel)),
+                new ViewTypeToViewModelTypeMapping(typeof(HueSetupView), typeof(HueSetupViewModel)),
+                new ViewTypeToViewModelTypeMapping(typeof(BandSetupView), typeof(BandSetupViewModel))
             }
             .ToImmutableDictionary();
 
@@ -88,10 +94,14 @@ namespace Roboworks.HueManager
         {
             base.ConfigureContainer();
 
+            // Services
             this.RegisterAsSingleton<IHueService, HueService>();
             this.RegisterAsSingleton<IBandService, BandService>();
 
-            this.RegisterAsSingleton<MainPage>(ViewNames.Main);
+            // Views
+            this.RegisterAsSingleton<MainView>(ViewNames.Main);
+            this.RegisterAsSingleton<HueSetupView>(ViewNames.HueSetup);
+            this.RegisterAsSingleton<BandSetupView>(ViewNames.BandSetup);
         }
 
 #region Private Methods

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 using Prism.Mvvm;
 using Prism.Commands;
 
 using Roboworks.HueManager.Services;
 using Roboworks.Hue;
+using Prism.Windows.Navigation;
 
 namespace Roboworks.HueManager.ViewModels
 {
-    public class MainPageViewModel : BindableBase
+    public class BandSetupViewModel : BindableBase
     {
         private const double BrightnessStep = 0.1d;
 
@@ -89,18 +89,20 @@ namespace Roboworks.HueManager.ViewModels
         private DelegateCommand _tilesRemoveCommand;
         public ICommand TilesRemoveCommand => this._tilesRemoveCommand;
 
+        public ICommand NavigateBackCommand { get; }
+
 #endregion
         
-        public MainPageViewModel(IBandService bandService, IHueService hueService)
+        public BandSetupViewModel(IBandService bandService, IHueService hueService)
         {
             if (bandService == null)
             {
-                new ArgumentNullException(nameof(bandService));
+                throw new ArgumentNullException(nameof(bandService));
             }
 
             if (hueService == null)
             {
-                new ArgumentNullException(nameof(hueService));
+                throw new ArgumentNullException(nameof(hueService));
             }
 
             this._bandService = bandService;
@@ -232,7 +234,7 @@ namespace Roboworks.HueManager.ViewModels
                     async (hueLightBulb) =>
                         await this._hueService.LightBulbBrightnessSet(
                             e.BulbId, 
-                            Math.Max(0d, hueLightBulb.Brightness - MainPageViewModel.BrightnessStep)
+                            Math.Max(0d, hueLightBulb.Brightness - BandSetupViewModel.BrightnessStep)
                         )
                 );
         }
@@ -245,12 +247,11 @@ namespace Roboworks.HueManager.ViewModels
                     async (hueLightBulb) =>
                         await this._hueService.LightBulbBrightnessSet(
                             e.BulbId, 
-                            Math.Min(1d, hueLightBulb.Brightness + MainPageViewModel.BrightnessStep)
+                            Math.Min(1d, hueLightBulb.Brightness + BandSetupViewModel.BrightnessStep)
                         )
                 );
         }
 
 #endregion
-
     }
 }
