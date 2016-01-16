@@ -35,26 +35,23 @@ using Roboworks.HueManager.Services;
 
 namespace Roboworks.HueManager
 {
-    using ViewNameToTypeMapping = KeyValuePair<string, Type>;
-    using ViewTypeToViewModelTypeMapping = KeyValuePair<Type, Type>;
-
     sealed partial class App : PrismUnityApplication
     {
         private readonly ImmutableDictionary<string, Type> _viewNameToTypeMappings =
-            new ViewNameToTypeMapping[]
+            new Dictionary<string, Type>
             {
-                new ViewNameToTypeMapping(ViewNames.Main, typeof(MainView)),
-                new ViewNameToTypeMapping(ViewNames.HueSetup, typeof(HueSetupView)),
-                new ViewNameToTypeMapping(ViewNames.BandSetup, typeof(BandSetupView))
+                [ViewNames.Main] = typeof(MainView),
+                [ViewNames.HueSetup] = typeof(HueSetupView),
+                [ViewNames.BandSetup] = typeof(BandSetupView)
             }
             .ToImmutableDictionary();
 
         private readonly ImmutableDictionary<Type, Type> _viewTypeToViewModelTypeMappings =
-            new ViewTypeToViewModelTypeMapping[]
+            new Dictionary<Type, Type>
             {
-                new ViewTypeToViewModelTypeMapping(typeof(MainView), typeof(MainViewModel)),
-                new ViewTypeToViewModelTypeMapping(typeof(HueSetupView), typeof(HueSetupViewModel)),
-                new ViewTypeToViewModelTypeMapping(typeof(BandSetupView), typeof(BandSetupViewModel))
+                [typeof(MainView)] = typeof(MainViewModel),
+                [typeof(HueSetupView)] = typeof(HueSetupViewModel),
+                [typeof(BandSetupView)] = typeof(BandSetupViewModel)
             }
             .ToImmutableDictionary();
 
