@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Roboworks.HueManager
 {
+    public static class Constants
+    {
+        public const string AppName = "BandEx";
+    }
+
     public static class ViewNames
     {
         public const string Main = "Main";

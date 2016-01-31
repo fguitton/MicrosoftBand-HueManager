@@ -16,6 +16,25 @@ namespace Roboworks.HueManager.ViewModels
     public class MainViewModel : BindableBase
     {
 
+        private ISettingsProvider _settings;
+
+#region Properties
+
+        private bool _isHueConfigured = false;
+        public bool IsHueConfigured
+        {
+            get
+            {
+                return this._isHueConfigured;
+            }
+            set
+            {
+                this.SetProperty(ref this._isHueConfigured, value);
+            }
+        }
+
+#endregion
+
 #region Commands
 
         private readonly DelegateCommand _hueSetupOpenCommand;
@@ -26,8 +45,15 @@ namespace Roboworks.HueManager.ViewModels
 
 #endregion
 
-        public MainViewModel(INavigationService navigationService)
+        public MainViewModel(INavigationService navigationService, ISettingsProvider settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            this._settings = settings;
+
             this._hueSetupOpenCommand = 
                 new DelegateCommand(
                     () => navigationService.Navigate(ViewNames.HueSetup, null),
@@ -39,6 +65,8 @@ namespace Roboworks.HueManager.ViewModels
                     () => navigationService.Navigate(ViewNames.BandSetup, null),
                     () => true
                 );
+
+            this.IsHueConfigured = this._settings.HueBridgeIpAddress != null;
         }
 
     }

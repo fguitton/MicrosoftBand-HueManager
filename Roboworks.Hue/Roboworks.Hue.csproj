@@ -107,8 +107,16 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Entities\HueBridgeInfo.cs" />
+    <Compile Include="Entities\HueApiUser.cs" />
+    <Compile Include="HueException.cs" />
+    <Compile Include="HueHelper.cs" />
+    <Compile Include="HueApiResponseErrorException.cs" />
     <Compile Include="HueService.cs" />
-    <Compile Include="LightBulb.cs" />
+    <Compile Include="Entities\HueLightBulb.cs" />
+    <Compile Include="HueServiceProvider.cs" />
+    <Compile Include="HttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Roboworks.Hue.rd.xml" />
   </ItemGroup>

@@ -1,0 +1,76 @@
+﻿<UserControl
+    x:Class="Roboworks.HueManager.Controls.IpAddressField"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Roboworks.HueManager.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Width="Auto"
+    Height="Auto"
+>
+
+    <UserControl.Resources>
+
+        <Style x:Key="IpAddressPart" TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="MaxLength" Value="3" />
+            <Setter Property="InputScope" Value="Digits" />
+        </Style>
+        
+        <Style x:Key="IpAddressSeparator" TargetType="TextBlock">
+            <Setter Property="Text" Value="." />
+            <Setter Property="Margin" Value="4,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <StackPanel 
+        Orientation="Horizontal"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+    >
+
+        <TextBox 
+            x:Name="IpAddressPart1"
+            Style="{StaticResource IpAddressPart}"
+            IsEnabled="False"
+            Text="192"
+            TextChanging="IpAddressPart_TextChanging"
+            TextChanged="IpAddressPart_TextChanged"
+        />
+
+        <TextBlock Style="{StaticResource IpAddressSeparator}" />
+
+        <TextBox 
+            x:Name="IpAddressPart2"
+            Style="{StaticResource IpAddressPart}"
+            IsEnabled="False"
+            Text="168"
+            TextChanging="IpAddressPart_TextChanging"
+            TextChanged="IpAddressPart_TextChanged"
+        />
+
+        <TextBlock Style="{StaticResource IpAddressSeparator}" />
+
+        <TextBox 
+            x:Name="IpAddressPart3"
+            Style="{StaticResource IpAddressPart}"
+            Text="0" 
+            TextChanging="IpAddressPart_TextChanging"
+            TextChanged="IpAddressPart_TextChanged"
+        />
+
+        <TextBlock Style="{StaticResource IpAddressSeparator}" />
+
+        <TextBox 
+            x:Name="IpAddressPart4"
+            Style="{StaticResource IpAddressPart}"
+            Text="0" 
+            TextChanging="IpAddressPart_TextChanging"
+            TextChanged="IpAddressPart_TextChanged"
+        />
+
+    </StackPanel>
+</UserControl>

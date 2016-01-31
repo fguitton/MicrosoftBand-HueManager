@@ -5,41 +5,73 @@ using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
+
+using Roboworks.Hue.Entities;
 
 namespace Roboworks.Hue
 {
     public interface IHueService
     {
+        HueBridgeInfo HueBridgeInfo { get; }
+
         Task<HueLightBulb[]> LightBulbsGet();
 
         Task<bool> LightBulbIsOnSet(string id, bool value);
 
         Task<bool> LightBulbBrightnessSet(string id, double value);
     }
-
-    // http://192.168.1.100/api/188aea1620420fc73c820a7a3b07cdb/lights
-
-    public class HueService : IHueService
+    
+    internal class HueService : IHueService
     {
-        private const string HueIpAddress = "192.168.1.100";
-        private const string HueApiUser = "188aea1620420fc73c820a7a3b07cdb";
+        private const string HueBridgePageHeader = "hue personal wireless lighting";
 
-        private static readonly string HueHttpApi = 
-            $"http://{HueService.HueIpAddress}/api/{HueService.HueApiUser}";
+        private readonly IHttpClient _httpClient;
+        private readonly string _hueApiUserId;
 
+#region Properties
+
+        public HueBridgeInfo HueBridgeInfo { get; }
+
+#endregion
+
+        public HueService(HueBridgeInfo hueBridgeInfo, string hueApiUserId, IHttpClient httpClient)
+        {
+            if (hueBridgeInfo == null)
+            {
+                throw new ArgumentNullException(nameof(hueBridgeInfo));
+            }
+
+            if (hueApiUserId == null)
+            {
+                throw new ArgumentNullException(nameof(hueApiUserId));
+            }
+
+            if (httpClient == null)
+            {
+                throw new ArgumentNullException(nameof(httpClient));
+            }
+
+            this.HueBridgeInfo = hueBridgeInfo;
+            this._hueApiUserId = hueApiUserId;
+            this._httpClient = httpClient;
+        }
+
+#region Public Methods
+        
         public async Task<HueLightBulb[]> LightBulbsGet()
         {
-            var uri = HueService.HueHttpApi + "/lights";
-            var json = await this.HttpClientGet(uri);
+            var uri = this.HueApiWithUserUriGet() + "/lights";
+            var json = await this._httpClient.HttpClientGet(uri);
 
             var data = JObject.Parse(json);
 
             var lightBulbs = 
                 data.Children()
                     .Cast<JProperty>()
-                    .Select(item => HueLightBulb.FromData(item.Name, item.Value))
+                    .Select(item => HueLightBulb.FromData(item.Name, item.Value.ToString()))
                     .ToArray();
 
             return lightBulbs;
@@ -47,10 +79,10 @@ namespace Roboworks.Hue
 
         public async Task<bool> LightBulbIsOnSet(string id, bool value)
         {
-            var uri = HueService.HueHttpApi + $"/lights/{id}/state";
+            var uri = this.HueApiWithUserUriGet() + $"/lights/{id}/state";
             var data = new JObject(new JProperty("on", value));
 
-            var json = await this.HttpClientPut(uri, data.ToString());
+            var json = await this._httpClient.HttpClientPut(uri, data.ToString());
 
             return
                 JArray.Parse(json)
@@ -69,10 +101,10 @@ namespace Roboworks.Hue
                     );
             }
 
-            var uri = HueService.HueHttpApi + $"/lights/{id}/state";
+            var uri = this.HueApiWithUserUriGet() + $"/lights/{id}/state";
             var data = new JObject(new JProperty("bri", (int)(253 * value) + 1)); // value range is 1 - 254
             
-            var json = await this.HttpClientPut(uri, data.ToString());
+            var json = await this._httpClient.HttpClientPut(uri, data.ToString());
 
             return
                 JArray.Parse(json)
@@ -81,38 +113,31 @@ namespace Roboworks.Hue
                     .Any(item => item.Name == "success");
         }
 
+#endregion
+
 #region Private Methods
 
-        protected virtual async Task<string> HttpClientGet(string requestUri)
+        private string HueApiUriGet()
         {
-            string data;
-
-            using (var httpClient = new HttpClient())
-            using (var message = await httpClient.GetAsync(requestUri))
-            {
-                message.EnsureSuccessStatusCode();
-
-                data = await message.Content.ReadAsStringAsync();
-            }
-
-            return data;
+            return HueHelper.HueApiUriGet(this.HueBridgeInfo.IpAddress);
         }
 
-        protected virtual async Task<string> HttpClientPut(string requestUri, string content)
+        private string HueApiWithUserUriGet()
         {
-            string data;
+            return HueHelper.HueApiWithUserUriGet(this.HueBridgeInfo.IpAddress, this._hueApiUserId);
+        }
+
+        //private async Task<bool> BridgePing(string ipAddress)
+        //{
+        //    var requestUri = this.HueApiUriGet(ipAddress);
+        //    var data = await this.HttpClientGet(requestUri);
+
+        //    var element = XElement.Parse(data);
+
+        //    var pageTitle = element.Element("html")?.Element("head")?.Element("title")?.Value;
             
-            using (var httpClient = new HttpClient())
-            using (var httpContent = new StringContent(content))
-            using (var message = await httpClient.PutAsync(requestUri, httpContent))
-            {
-                message.EnsureSuccessStatusCode();
-
-                data = await message.Content.ReadAsStringAsync();
-            }
-
-            return data;
-        }
+        //    return pageTitle == HueService.HueBridgePageHeader;
+        //}
 
 #endregion
 

@@ -99,9 +99,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="Controls\IpAddressField.xaml.cs">
+      <DependentUpon>IpAddressField.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullableToVisibilityConverter.cs" />
     <Compile Include="DispatcherFacade.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\BandSetupViewModel.cs" />
     <Compile Include="ViewModels\HueSetupViewModel.cs" />
     <Compile Include="Views\BandSetupView.xaml.cs">
@@ -124,6 +130,12 @@
     <None Include="Roboworks.HueManager_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\TileIcons\LightBulb.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\TileIcons\LightBulb_Small.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -138,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\IpAddressField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\BandSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

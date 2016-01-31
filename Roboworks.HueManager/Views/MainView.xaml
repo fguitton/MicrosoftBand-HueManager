@@ -14,6 +14,12 @@
 
     <Page.Resources>
 
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter 
+            x:Key="BooleanToVisibilityInvertedConverter" 
+            IsInverted="True"
+        />
+
         <Style x:Key="StepButtonStyle" TargetType="Button">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -112,13 +118,44 @@
                     Style="{StaticResource StepTitleText}"
                 />
 
-                <ProgressRing 
+                <Grid Grid.Row="2">
+
+                    <Grid
+                        Visibility="{Binding 
+                            Path=IsHueConfigured, 
+                            Converter={StaticResource BooleanToVisibilityInvertedConverter}
+                        }"
+                    >
+
+                        <TextBlock TextAlignment="Center">
+                            
+                            <Run Text="Not connected" />
+                            <LineBreak />
+                            <Run Text="Tap here to configure" />
+                            
+                        </TextBlock>
+
+                    </Grid>
+
+                    <Grid
+                        Visibility="{Binding 
+                            Path=IsHueConfigured, 
+                            Converter={StaticResource BooleanToVisibilityConverter}
+                        }"
+                    >
+
+
+                    </Grid>
+
+                </Grid>
+
+                <!--<ProgressRing 
                     Grid.Row="2"
                     IsActive="True" 
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Margin="24"
-                />
+                />-->
 
             </Grid>
         </Button>

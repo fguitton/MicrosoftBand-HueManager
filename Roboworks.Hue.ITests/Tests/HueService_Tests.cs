@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+
+using Roboworks.Hue.Entities;
 
 namespace Roboworks.Hue.ITests.Tests
 {
@@ -12,7 +15,12 @@ namespace Roboworks.Hue.ITests.Tests
 
         private HueService HueServiceCreate()
         {
-            return new HueService();
+            return 
+                new HueService(
+                    HueBridgeInfo.FromData(TestData.HueBridgeInfo_Json),
+                    TestData.HueBridge_UserId, 
+                    new HttpClient()
+                );
         }
 
 #endregion

@@ -12,7 +12,9 @@ namespace Roboworks.HueManager
     {
         public static void Handle(Exception exception)
         {
-            new MessageDialog(exception.Message, exception.GetType().Name).ShowAsync();
+            System.Diagnostics.Debugger.Break();
+
+            new MessageDialog(exception.Message, exception.GetType().Name).ShowAsync().Forget();
         }
     }
 }

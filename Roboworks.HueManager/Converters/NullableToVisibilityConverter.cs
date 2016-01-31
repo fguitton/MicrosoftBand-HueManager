@@ -9,11 +9,20 @@ using Windows.UI.Xaml.Data;
 
 namespace Roboworks.HueManager.Converters
 {
-    public class VisibilityToBooleanConverter : IValueConverter
+    class NullableToVisibilityConverter : IValueConverter
     {
+        public bool IsInverted { get; set; } = false;
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return (bool)value ? Visibility.Visible : Visibility.Collapsed;
+            var isVisible = (value != null);
+
+            if (this.IsInverted)
+            {
+                isVisible = !isVisible;
+            }
+
+            return isVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

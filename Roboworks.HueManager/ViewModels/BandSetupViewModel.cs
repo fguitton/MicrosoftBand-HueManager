@@ -11,7 +11,7 @@ using Prism.Commands;
 
 using Roboworks.HueManager.Services;
 using Roboworks.Hue;
-using Prism.Windows.Navigation;
+using Roboworks.Hue.Entities;
 
 namespace Roboworks.HueManager.ViewModels
 {

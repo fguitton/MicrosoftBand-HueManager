@@ -91,8 +91,10 @@ namespace Roboworks.HueManager
         {
             base.ConfigureContainer();
 
+            this.RegisterAsSingleton<ISettingsProvider, SettingsProvider>();
+
             // Services
-            this.RegisterAsSingleton<IHueService, HueService>();
+            this.RegisterAsSingleton<IHueServiceProvider, HueServiceProvider>();
             this.RegisterAsSingleton<IBandService, BandService>();
 
             // Views

@@ -11,7 +11,9 @@ using Microsoft.Band;
 using Microsoft.Band.Tiles;
 using Microsoft.Band.Tiles.Pages;
 
-using Roboworks.Hue;
+using Roboworks.Hue.Entities;
+using Windows.Storage.Streams;
+using Windows.Storage;
 
 namespace Roboworks.HueManager.Services
 {
@@ -132,53 +134,49 @@ namespace Roboworks.HueManager.Services
         {
             this.BandClientCheck();
             
-            WriteableBitmap smallIconBitmap = new WriteableBitmap(24, 24);
-            BandIcon smallIcon = smallIconBitmap.ToBandIcon();
-
-            WriteableBitmap tileIconBitmap = new WriteableBitmap(48, 48);
-            BandIcon tileIcon = tileIconBitmap.ToBandIcon();
-
             Guid tileGuid = Guid.NewGuid();
             var tile = 
                 new BandTile(tileGuid)
                 {
                     IsBadgingEnabled = true,
                     Name = "Hue",
-                    SmallIcon = smallIcon,
-                    TileIcon = tileIcon
+                    SmallIcon =
+                        await this.TileIconCreate("ms-appx:///Assets/TileIcons/LightBulb_Small.png", 24, 24),
+                    TileIcon = 
+                        await this.TileIconCreate("ms-appx:///Assets/TileIcons/LightBulb.png", 48, 48)
                 };
             
-            var pageDataList = new List<PageData>(hueLightBulbs.Length);
-            var pageLayoutIndex = 0;
+            //var pageDataList = new List<PageData>(hueLightBulbs.Length);
+            //var pageLayoutIndex = 0;
 
-            this._pageBulbIds.Clear();
+            //this._pageBulbIds.Clear();
 
-            foreach(var hueLightBulb in hueLightBulbs)
-            {
-                var pageLayout = 
-                    new PageLayout(
-                        new ScrollFlowPanel()
-                        {
-                            Rect = new PageRect(0, 0, 258, 128),
-                            Orientation = FlowPanelOrientation.Vertical,
-                            ScrollBarColorSource = ElementColorSource.BandHighlight
-                        }
-                    );
-                var pageId = Guid.NewGuid();
-                var pageData = new PageData(pageId, pageLayoutIndex++);
+            //foreach(var hueLightBulb in hueLightBulbs)
+            //{
+            //    var pageLayout = 
+            //        new PageLayout(
+            //            new ScrollFlowPanel()
+            //            {
+            //                Rect = new PageRect(0, 0, 258, 128),
+            //                Orientation = FlowPanelOrientation.Vertical,
+            //                ScrollBarColorSource = ElementColorSource.BandHighlight
+            //            }
+            //        );
+            //    var pageId = Guid.NewGuid();
+            //    var pageData = new PageData(pageId, pageLayoutIndex++);
 
-                this._pageBulbIds.Add(pageId, hueLightBulb.Id);
+            //    this._pageBulbIds.Add(pageId, hueLightBulb.Id);
 
-                this.TilePageLayoutPopulate(hueLightBulb, pageLayout, pageData);
+            //    this.TilePageLayoutPopulate(hueLightBulb, pageLayout, pageData);
                 
-                tile.PageLayouts.Add(pageLayout);
-                pageDataList.Add(pageData);
-            }
+            //    tile.PageLayouts.Add(pageLayout);
+            //    pageDataList.Add(pageData);
+            //}
             
             await this._bandClient.TileManager.AddTileAsync(tile);
-            await this._bandClient.TileManager.SetPagesAsync(tileGuid, pageDataList);
+            //await this._bandClient.TileManager.SetPagesAsync(tileGuid, pageDataList);
 
-            await this._bandClient.TileManager.StartReadingsAsync();
+            //await this._bandClient.TileManager.StartReadingsAsync();
         }
 
         public async Task BandTileDelete()
@@ -196,6 +194,19 @@ namespace Roboworks.HueManager.Services
 #endregion
 
 #region Private Methods
+
+        private async Task<BandIcon> TileIconCreate(string fileUri, int width, int height)
+        {
+            var bitmap = new WriteableBitmap(width, height);
+            var imageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileUri));
+
+            using (var fileStream = await imageFile.OpenAsync(FileAccessMode.Read))
+            {    
+                await bitmap.SetSourceAsync(fileStream);
+            }
+
+            return bitmap.ToBandIcon();
+        }
 
         private void BandClientCheck()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 
-namespace Roboworks.Hue
+namespace Roboworks.Hue.Entities
 {
     public class HueLightBulb
     {
@@ -24,16 +24,18 @@ namespace Roboworks.Hue
         {
         }
 
-        public static HueLightBulb FromData(string id, JToken data)
+        internal static HueLightBulb FromData(string id, string data)
         {
+            var jToken = JToken.Parse(data);
+
             return 
                 new HueLightBulb()
                 {
                     Id = id,
-                    Name = (string)data["name"],
-                    IsOn = (bool)data["state"]["on"],
-                    Brightness = ((double)data["state"]["bri"] - 1) / 253,
-                    IsReachable = (bool)data["state"]["reachable"]
+                    Name = (string)jToken["name"],
+                    IsOn = (bool)jToken["state"]["on"],
+                    Brightness = ((double)jToken["state"]["bri"] - 1) / 253,
+                    IsReachable = (bool)jToken["state"]["reachable"]
                 };
         }
     }

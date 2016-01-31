@@ -6,11 +6,205 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="using:Prism.Windows.Mvvm"
-    prism:ViewModelLocator.AutoWireViewModel="true"
+    xmlns:controls="using:Roboworks.HueManager.Controls"
+    xmlns:converter="using:Roboworks.HueManager.Converters"
+    prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
 >
 
+    <Page.Resources>
+
+        <converter:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
+        <converter:NullableToVisibilityConverter 
+            x:Key="NullableToVisibilityConverterInverted" 
+            IsInverted="True" 
+        />
+
+    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border 
+            Height="48"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+        >
+
+            <StackPanel 
+                Orientation="Horizontal"
+                VerticalAlignment="Stretch"
+            >
+
+                <Button
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Width="{Binding 
+                        RelativeSource={RelativeSource Mode=Self},
+                        Path=ActualHeight,
+                        Mode=OneWay
+                    }"
+                >
+                    <TextBlock 
+                        Text="&#xE0C4;" 
+                        FontFamily="Segoe MDL2 Assets"
+                        VerticalAlignment="Center"
+                    />
+
+                </Button>
+
+                <TextBlock 
+                    Text="Philips Hue Setup" 
+                    FontSize="24" 
+                    FontWeight="Thin"
+                    VerticalAlignment="Center"
+                    Foreground="White"
+                    Margin="8,0"
+                />
+
+            </StackPanel>
+
+        </Border>
+
+        <Grid Grid.Row="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>            
+
+            <Viewbox 
+                Grid.Row="0"
+                Margin="40"
+            >
+
+                <Grid
+                    Width="48"
+                    Height="48"
+                >
+
+                    <Path 
+                        Stroke="White"
+                        StrokeThickness="1.5"
+                        StrokeLineJoin="Round"
+                        StrokeEndLineCap="Round"
+                        StrokeStartLineCap="Round"
+                        Data="M 19.0478,43.4475L 19.0478,42.3521L 19.0478,37.4032C 18.2225,36.9905 17.3971,36.5778 16.9844,35.3398C 16.5717,34.1017 16.5717,32.0383 16.1633,30.592C 15.7549,29.1457 14.9381,28.3165 14.1213,27.4873C 11.0778,24.7541 9.14347,20.7812 9.14347,16.3564C 9.14347,8.1514 15.795,1.4999 24,1.4999C 32.205,1.4999 38.8565,8.15139 38.8565,16.3564C 38.8565,20.7761 36.9266,24.745 33.884,27.4826C 33.0654,28.3134 32.2468,29.1441 31.8376,30.5912C 31.4283,32.0383 31.4283,34.1017 31.0156,35.3398C 30.6029,36.5778 29.7775,36.9905 28.9522,37.4032L 28.9522,43.4367L 28.9522,45.2618C 28.9522,45.9456 26.735,46.4999 24,46.4999C 21.265,46.4999 19.0478,45.9456 19.0478,45.2618L 19.0478,43.4473M 18,16L 21,11L 19,21L 25,11L 23,21L 29,11L 27,21L 30,16"
+                    />
+
+                </Grid>
+
+            </Viewbox>
+
+            <StackPanel 
+                Grid.Row="1"
+                Orientation="Vertical"
+            >
+
+                <TextBlock 
+                    Text="Enter Hue Bridge IP address" 
+                    HorizontalAlignment="Center"
+                />
+
+                <controls:IpAddressField 
+                    HorizontalAlignment="Center"
+                    Margin="0,8,0,0"
+                    IpAddress="{Binding Path=IpAddress, Mode=TwoWay}"
+                />
+
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+
+            <Grid Margin="8,32">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Bridge name:" 
+                    Margin="0,0,8,0"
+                />
+
+                <TextBlock 
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="{Binding Path=HueBridgeInfo.Name, Mode=OneWay}" 
+                    TextTrimming="CharacterEllipsis"
+                />
+
+                <TextBlock 
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="Bridge ID:" 
+                    Margin="0,8,8,0"
+                />
+
+                <TextBlock 
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="{Binding Path=HueBridgeInfo.Id, Mode=OneWay}" 
+                    TextTrimming="CharacterEllipsis"
+                />
+
+            </Grid>
+
+            <Border
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                Visibility="{Binding 
+                    Path=HueBridgeInfo, 
+                    Mode=OneWay,
+                    Converter={StaticResource NullableToVisibilityConverterInverted}
+                }"
+            />
+
+        </Grid>
+        
+        <Grid Grid.Row="3">
+
+            <Button
+                Content="Connect"
+                HorizontalAlignment="Stretch"
+                Margin="8"
+                Command="{Binding Path=ConnectCommand, Mode=OneTime}"
+                Visibility="{Binding 
+                    Path=HueBridgeInfo, 
+                    Mode=OneWay,
+                    Converter={StaticResource NullableToVisibilityConverterInverted}
+                }"
+            />
+
+            <Button
+                Content="Disconnect"
+                HorizontalAlignment="Stretch"
+                Margin="8"
+                Command="{Binding Path=DisconnectCommand, Mode=OneTime}"
+                Visibility="{Binding 
+                    Path=HueBridgeInfo, 
+                    Mode=OneWay,
+                    Converter={StaticResource NullableToVisibilityConverter}
+                }"
+            />
+
+        </Grid>
+
     </Grid>
+    
 </Page>
