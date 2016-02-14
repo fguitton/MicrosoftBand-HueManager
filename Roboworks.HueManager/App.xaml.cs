@@ -108,6 +108,7 @@ namespace Roboworks.HueManager
         private void Application_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             ExceptionHandler.Handle(e.Exception);
+            e.Handled = true;
         }
 
         private Type ViewTypeGetter(string viewName)

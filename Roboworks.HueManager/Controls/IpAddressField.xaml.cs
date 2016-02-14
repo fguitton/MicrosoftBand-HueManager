@@ -54,24 +54,22 @@ namespace Roboworks.HueManager.Controls
 
         private void IpAddressPart_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
         {
-            if (string.IsNullOrEmpty(sender.Text))
-            {
-                sender.Text = default(int).ToString();
-            }
-            else
-            {
-                var newValue = 
-                    new String(
-                        sender.Text
-                            .Where(ch => char.IsDigit(ch))
-                            .Select(ch => ch)
-                            .ToArray()
-                    );
+            var newValue = 
+                new String(
+                    sender.Text
+                        .Where(ch => char.IsDigit(ch))
+                        .Select(ch => ch)
+                        .ToArray()
+                );
 
-                if (sender.Text != newValue)
-                {
-                    sender.Text = newValue;
-                }
+            if (sender.Text != newValue)
+            {
+                var caretIndex = sender.SelectionStart;
+
+                sender.Text = newValue;
+
+                sender.SelectionLength = 0;
+                sender.SelectionStart = (caretIndex <= sender.Text.Length) ? caretIndex : sender.Text.Length;
             }
         }
 
@@ -80,11 +78,27 @@ namespace Roboworks.HueManager.Controls
             this.IpAddress =
                 string.Format(
                     "{0}.{1}.{2}.{3}",
-                    this.IpAddressPart1,
-                    this.IpAddressPart2,
-                    this.IpAddressPart3,
-                    this.IpAddressPart4
+                    this.IpAddressPart1.Text,
+                    this.IpAddressPart2.Text,
+                    this.IpAddressPart3.Text,
+                    this.IpAddressPart4.Text
                 );
+        }
+
+        private void IpAddressPart_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            textBox.SelectionStart = 0;
+            textBox.SelectionLength = textBox.Text.Length;
+        }
+
+        private void IpAddressPart_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            if (textBox.Text.Length == 0)
+            {
+                textBox.Text = default(int).ToString();
+            }
         }
 
         private static void IpAddress_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)

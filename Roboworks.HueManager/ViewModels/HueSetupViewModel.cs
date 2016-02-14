@@ -16,6 +16,14 @@ namespace Roboworks.HueManager.ViewModels
 {
     using HueEntities = Roboworks.Hue.Entities;
 
+    public enum HueSetupViewModelState
+    {
+        Disconnected = 1,
+        Connecting,
+        Connected,
+        Disconnecting
+    }
+
     public class HueSetupViewModel : BindableBase, INavigationAware
     {
         private readonly IHueServiceProvider _hueServiceProvider;
@@ -26,19 +34,18 @@ namespace Roboworks.HueManager.ViewModels
         
 #region Properties
 
-        private bool _isBusy = false;
-        public bool IsBusy
+        private HueSetupViewModelState? _state = null;
+        public HueSetupViewModelState? State
         {
             get
             {
-                return this._isBusy;
+                return this._state;
             }
             set
             {
-                if (this.SetProperty(ref this._isBusy, value))
+                if (this._state != value)
                 {
-                    this._connectCommand.RaiseCanExecuteChanged();
-                    this._disconnectCommand.RaiseCanExecuteChanged();
+                    this._state = value;
                 }
             }
         }
@@ -78,6 +85,16 @@ namespace Roboworks.HueManager.ViewModels
 
         private readonly DelegateCommand _disconnectCommand;
         public ICommand DisconnectCommand => this._disconnectCommand;
+
+#endregion
+
+#region Events
+
+        public event EventHandler StateChanged;
+        private void OnStateChanged(EventArgs args)
+        {
+            this.StateChanged?.Invoke(this, args);
+        }
 
 #endregion
 
@@ -122,7 +139,9 @@ namespace Roboworks.HueManager.ViewModels
 
         private async void ConnectCommand_Executed()
         {
-            this.IsBusy = true;
+            this.State = HueSetupViewModelState.Connecting;
+
+            Exception error = null;
 
             try
             {
@@ -137,33 +156,65 @@ namespace Roboworks.HueManager.ViewModels
                 this._hueService = await this._hueServiceProvider.Connect(ipAddress, hueApiUser.UserId);
                 this.HueBridgeInfo = new HueBridgeInfo(this._hueService.HueBridgeInfo);
             }
-            finally
+            catch(Exception ex)
             {
-                this.IsBusy = false;
+                error = ex;
+            }
+
+            if (error != null)
+            {
+                this.State = HueSetupViewModelState.Disconnected;
+            }
+            else
+            {
+                this.State = HueSetupViewModelState.Connected;
             }
         }
 
         private bool ConnectCommand_CanExecute()
         {
-            return !this.IsBusy;
+            return true;
+            //return !this.IsBusy;
         }
 
         private async void DisconnectCommand_Executed()
         {
-            this.IsBusy = true;
+            //this.IsBusy = true;
+            
+            await 
+                this._hueServiceProvider.HueApiUserDelete(
+                    this._settingsProvider.HueBridgeIpAddress, 
+                    this._settingsProvider.HueApiUserId
+                );
 
-            await this._bandService.BandTileDelete();
-
-            this.IsBusy = false;
+            //this.IsBusy = false;
         }
 
         private bool DisconnectCommand_CanExecute()
         {
-            return !this.IsBusy;
+            return true;
+            //return !this.IsBusy;
         }
 
         public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
+            this.State = HueSetupViewModelState.Disconnected;
+            this.OnStateChanged(EventArgs.Empty);
+
+            if (this._hueService != null)
+            {
+                // Connected state
+            }
+            else if (
+                this._settingsProvider.HueBridgeIpAddress != null && 
+                this._settingsProvider.HueApiUserId != null)
+            {
+                // Connecting state
+            }
+            else
+            {
+                // Disconnected state
+            }
         }
 
         public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)

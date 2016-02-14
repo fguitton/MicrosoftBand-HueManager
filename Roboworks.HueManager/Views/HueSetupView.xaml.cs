@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+using Roboworks.HueManager.ViewModels;
 
 namespace Roboworks.HueManager.Views
 {
@@ -22,9 +22,40 @@ namespace Roboworks.HueManager.Views
     /// </summary>
     public sealed partial class HueSetupView : Page
     {
+        private HueSetupViewModel _viewModel;
+
         public HueSetupView()
         {
             this.InitializeComponent();
+        }
+
+        private void Page_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (this._viewModel != null)
+            {
+                this._viewModel.StateChanged -= this.ViewModel_StateChanged;
+            }
+
+            this._viewModel = sender.DataContext as HueSetupViewModel;
+
+            if (this._viewModel != null)
+            {
+                this._viewModel.StateChanged += this.ViewModel_StateChanged;
+            }
+        }
+
+        private void ViewModel_StateChanged(object sender, EventArgs e)
+        {
+            if (this._viewModel.State.HasValue)
+            {
+                switch(this._viewModel.State.Value)
+                {
+                    case HueSetupViewModelState.Disconnected:
+                        break;
+                }
+
+                VisualStateManager.GoToState(this, "Disconnected", false);
+            }
         }
     }
 }

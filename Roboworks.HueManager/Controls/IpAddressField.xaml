@@ -39,6 +39,8 @@
             Text="192"
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
+            GotFocus="IpAddressPart_GotFocus"
+            LostFocus="IpAddressPart_LostFocus"
         />
 
         <TextBlock Style="{StaticResource IpAddressSeparator}" />
@@ -50,6 +52,8 @@
             Text="168"
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
+            GotFocus="IpAddressPart_GotFocus"
+            LostFocus="IpAddressPart_LostFocus"
         />
 
         <TextBlock Style="{StaticResource IpAddressSeparator}" />
@@ -60,6 +64,8 @@
             Text="0" 
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
+            GotFocus="IpAddressPart_GotFocus"
+            LostFocus="IpAddressPart_LostFocus"
         />
 
         <TextBlock Style="{StaticResource IpAddressSeparator}" />
@@ -70,6 +76,8 @@
             Text="0" 
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
+            GotFocus="IpAddressPart_GotFocus"
+            LostFocus="IpAddressPart_LostFocus"
         />
 
     </StackPanel>
