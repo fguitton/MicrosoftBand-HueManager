@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using System.Net;
+using System.Text.RegularExpressions;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,7 +22,9 @@ namespace Roboworks.HueManager.Controls
 {
     public sealed partial class IpAddressField : UserControl
     {
-
+        private const string IpAddress_RegexPattern = 
+            @"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        private const char IpAddress_PartsDelimiter = '.';
         private const string IpAddress_DefaultValue = "0.0.0.0";
 
         public static readonly DependencyProperty IpAddressProperty = 
@@ -46,10 +49,47 @@ namespace Roboworks.HueManager.Controls
                 this.SetValue(IpAddressField.IpAddressProperty, value);
             }
         }
-
+        
         public IpAddressField()
         {
             this.InitializeComponent();
+
+            this.IpAddressSet();
+        }
+
+#region Private Methods
+
+        private void IpAddressSet()
+        {
+            this.IpAddress =
+                string.Format(
+                    "{0}.{1}.{2}.{3}",
+                    this.IpAddressPart1.Text,
+                    this.IpAddressPart2.Text,
+                    this.IpAddressPart3.Text,
+                    this.IpAddressPart4.Text
+                );
+        }
+
+        private void IpAddressParse(string value)
+        {
+            string newValue;
+            
+            if (value != null && Regex.IsMatch(value, IpAddressField.IpAddress_RegexPattern))
+            {
+                newValue = value;
+            }
+            else
+            {
+                newValue = IpAddressField.IpAddress_DefaultValue;
+            }
+            
+            var parts = value.Split(IpAddressField.IpAddress_PartsDelimiter);
+
+            this.IpAddressPart1.Text = parts[0];
+            this.IpAddressPart2.Text = parts[1];
+            this.IpAddressPart3.Text = parts[2];
+            this.IpAddressPart4.Text = parts[3];
         }
 
         private void IpAddressPart_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
@@ -75,14 +115,7 @@ namespace Roboworks.HueManager.Controls
 
         private void IpAddressPart_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.IpAddress =
-                string.Format(
-                    "{0}.{1}.{2}.{3}",
-                    this.IpAddressPart1.Text,
-                    this.IpAddressPart2.Text,
-                    this.IpAddressPart3.Text,
-                    this.IpAddressPart4.Text
-                );
+            this.IpAddressSet();
         }
 
         private void IpAddressPart_GotFocus(object sender, RoutedEventArgs e)
@@ -104,9 +137,10 @@ namespace Roboworks.HueManager.Controls
         private static void IpAddress_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var ipAddressField = (IpAddressField)d;
-            
-            // TODO: validate string and set text to text boxes
-            // Set default IP address value if validation fails.
+            ipAddressField.IpAddressParse((string)e.NewValue);
         }
+
+#endregion
+
     }
 }

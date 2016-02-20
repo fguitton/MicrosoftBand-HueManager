@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Windows.UI.Popups;
-
 namespace Roboworks.HueManager
 {
     public static class ExceptionHandler
     {
-        public static void Handle(Exception exception)
+        public static void Handle(Exception exception, bool isHandled = false)
         {
-            System.Diagnostics.Debugger.Break();
+            if (!isHandled)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
 
-            new MessageDialog(exception.Message, exception.GetType().Name).ShowAsync().Forget();
+            MessageService.DialogShow(exception.Message, exception.GetType().Name);
         }
     }
 }

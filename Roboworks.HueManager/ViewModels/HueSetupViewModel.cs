@@ -26,6 +26,8 @@ namespace Roboworks.HueManager.ViewModels
 
     public class HueSetupViewModel : BindableBase, INavigationAware
     {
+        private const string IpAddressDefault = "192.168.0.0";
+
         private readonly IHueServiceProvider _hueServiceProvider;
         private readonly IBandService _bandService;
         private readonly ISettingsProvider _settingsProvider;
@@ -34,8 +36,8 @@ namespace Roboworks.HueManager.ViewModels
         
 #region Properties
 
-        private HueSetupViewModelState? _state = null;
-        public HueSetupViewModelState? State
+        private HueSetupViewModelState _state = HueSetupViewModelState.Disconnected;
+        public HueSetupViewModelState State
         {
             get
             {
@@ -50,7 +52,7 @@ namespace Roboworks.HueManager.ViewModels
             }
         }
         
-        private string _ipAddress = null;
+        private string _ipAddress = HueSetupViewModel.IpAddressDefault;
         public string IpAddress
         {
             get
@@ -90,8 +92,8 @@ namespace Roboworks.HueManager.ViewModels
 
 #region Events
 
-        public event EventHandler StateChanged;
-        private void OnStateChanged(EventArgs args)
+        public event EventHandler<HueSetupViewModelStateChangeEventArgs> StateChanged;
+        private void OnStateChanged(HueSetupViewModelStateChangeEventArgs args)
         {
             this.StateChanged?.Invoke(this, args);
         }
@@ -137,9 +139,19 @@ namespace Roboworks.HueManager.ViewModels
 
 #region Private Methods
 
+        private void StateChange(
+            HueSetupViewModelState state, 
+            bool isInitialState = false, 
+            Exception error = null)
+        {
+            this.State = state;
+
+            this.OnStateChanged(new HueSetupViewModelStateChangeEventArgs(isInitialState, error));
+        }
+
         private async void ConnectCommand_Executed()
         {
-            this.State = HueSetupViewModelState.Connecting;
+            this.StateChange(HueSetupViewModelState.Connecting);
 
             Exception error = null;
 
@@ -163,11 +175,11 @@ namespace Roboworks.HueManager.ViewModels
 
             if (error != null)
             {
-                this.State = HueSetupViewModelState.Disconnected;
+                this.StateChange(HueSetupViewModelState.Disconnected, error: error);
             }
             else
             {
-                this.State = HueSetupViewModelState.Connected;
+                this.StateChange(HueSetupViewModelState.Connected);
             }
         }
 
@@ -198,8 +210,7 @@ namespace Roboworks.HueManager.ViewModels
 
         public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
-            this.State = HueSetupViewModelState.Disconnected;
-            this.OnStateChanged(EventArgs.Empty);
+            var state = HueSetupViewModelState.Disconnected;
 
             if (this._hueService != null)
             {
@@ -210,14 +221,20 @@ namespace Roboworks.HueManager.ViewModels
                 this._settingsProvider.HueApiUserId != null)
             {
                 // Connecting state
+                // Start connection
             }
             else
             {
                 // Disconnected state
             }
+
+            this.StateChange(state, isInitialState: true);
         }
 
-        public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public void OnNavigatingFrom(
+            NavigatingFromEventArgs e, 
+            Dictionary<string, object> viewModelState, 
+            bool suspending)
         {
         }
 
@@ -243,6 +260,19 @@ namespace Roboworks.HueManager.ViewModels
             }
 
             this._hueBridgeInfo = hueBridgeInfo;
+        }
+    }
+
+    public class HueSetupViewModelStateChangeEventArgs : EventArgs
+    {
+        public bool IsInitialState { get; }
+
+        public Exception Error { get; }
+        
+        public HueSetupViewModelStateChangeEventArgs(bool isInitialState, Exception error = null)
+        {
+            this.IsInitialState = isInitialState;
+            this.Error = error;
         }
     }
 }

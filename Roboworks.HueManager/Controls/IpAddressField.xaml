@@ -36,7 +36,6 @@
             x:Name="IpAddressPart1"
             Style="{StaticResource IpAddressPart}"
             IsEnabled="False"
-            Text="192"
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
             GotFocus="IpAddressPart_GotFocus"
@@ -49,7 +48,6 @@
             x:Name="IpAddressPart2"
             Style="{StaticResource IpAddressPart}"
             IsEnabled="False"
-            Text="168"
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
             GotFocus="IpAddressPart_GotFocus"
@@ -61,7 +59,6 @@
         <TextBox 
             x:Name="IpAddressPart3"
             Style="{StaticResource IpAddressPart}"
-            Text="0" 
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
             GotFocus="IpAddressPart_GotFocus"
@@ -73,7 +70,6 @@
         <TextBox 
             x:Name="IpAddressPart4"
             Style="{StaticResource IpAddressPart}"
-            Text="0" 
             TextChanging="IpAddressPart_TextChanging"
             TextChanged="IpAddressPart_TextChanged"
             GotFocus="IpAddressPart_GotFocus"

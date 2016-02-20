@@ -111,6 +111,8 @@
     <Compile Include="DispatcherFacade.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="MessageService.cs" />
+    <Compile Include="ResourceManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\BandSetupViewModel.cs" />
     <Compile Include="ViewModels\HueSetupViewModel.cs" />
@@ -131,6 +133,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <PRIResource Include="Resources\en-US\Resources.resw" />
     <None Include="Roboworks.HueManager_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
