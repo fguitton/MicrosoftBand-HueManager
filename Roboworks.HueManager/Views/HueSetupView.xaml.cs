@@ -108,42 +108,29 @@ namespace Roboworks.HueManager.Views
         private async void ViewModel_StateChanged(object sender, HueSetupViewModelStateChangeEventArgs e)
         {
             var viewModel = (HueSetupViewModel)sender;
-            var useTransitions = !e.IsInitialState;
             
             switch(viewModel.State)
             {
                 case HueSetupViewModelState.Disconnected:
                     await this.LoadingViewDelayAwaitAsync();
 
-                    VisualStateManager.GoToState(this, this.DisconnectedState.Name, useTransitions);
+                    VisualStateManager.GoToState(this, this.DisconnectedState.Name, false);
 
                     if (e.Error != null)
                     {
-                        EventHandler<object> eventHandler = null;
-                        eventHandler =
-                            (sender_, args) =>
-                            {
-                                this.ErrorMessageDisplay(e.Error);
-                                this.ToDisconnectedTransition.Completed -= eventHandler;
-                            };
-
-                        this.ToDisconnectedTransition.Completed += eventHandler;
+                        this.ErrorMessageDisplay(e.Error);
                     }
                     break;
 
                 case HueSetupViewModelState.Connecting:
-                    if (e.IsInitialState)
-                    {
-                        VisualStateManager.GoToState(this, this.ConnectingState.Name, false);
-                    }
-
+                    VisualStateManager.GoToState(this, this.ConnectingState.Name, false);
                     this.LoadingViewDelaySet();
                     break;
 
                 case HueSetupViewModelState.Connected:
                     await this.LoadingViewDelayAwaitAsync();
 
-                    VisualStateManager.GoToState(this, this.ConnectedState.Name, useTransitions);
+                    VisualStateManager.GoToState(this, this.ConnectedState.Name, false);
 
                     if (e.Error != null)
                     {
@@ -152,11 +139,7 @@ namespace Roboworks.HueManager.Views
                     break;
 
                 case HueSetupViewModelState.Disconnecting:
-                    if (e.IsInitialState)
-                    {
-                        VisualStateManager.GoToState(this, this.DisconnectingState.Name, false);
-                    }
-
+                    VisualStateManager.GoToState(this, this.DisconnectingState.Name, false);
                     this.LoadingViewDelaySet();
                     break;
 

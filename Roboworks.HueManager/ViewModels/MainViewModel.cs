@@ -33,15 +33,7 @@ namespace Roboworks.HueManager.ViewModels
             }
         }
 
-#endregion
-
-#region Commands
-
-        private readonly DelegateCommand _hueSetupOpenCommand;
-        public ICommand HueSetupOpenCommand => this._hueSetupOpenCommand;
-
-        private readonly DelegateCommand _bandSetupOpenCommand;
-        public ICommand BandSetupOpenCommand => this._bandSetupOpenCommand;
+        public ReadOnlyCollection<MainViewModelTile> Tiles { get; }
 
 #endregion
 
@@ -54,20 +46,51 @@ namespace Roboworks.HueManager.ViewModels
 
             this._settings = settings;
 
-            this._hueSetupOpenCommand = 
-                new DelegateCommand(
-                    () => navigationService.Navigate(ViewNames.HueSetup, null),
-                    () => true
-                );
-
-            this._bandSetupOpenCommand =
-                new DelegateCommand(
-                    () => navigationService.Navigate(ViewNames.BandSetup, null),
-                    () => true
-                );
+            // TODO: split tiles implementation into separate modules (projects)
+            this.Tiles = 
+                new MainViewModelTile[]
+                {
+                    new MainViewModelTile(
+                        "Philips Hue", 
+                        new DelegateCommand(
+                            () => navigationService.Navigate(ViewNames.HueSetup, null),
+                            () => true
+                        )
+                    ),
+                    new MainViewModelTile(
+                        "Charge Reminder",
+                        new DelegateCommand(
+                            () => navigationService.Navigate(ViewNames.BandSetup, null),
+                            () => true
+                        )
+                    )
+                }.ToList().AsReadOnly();
 
             this.IsHueConfigured = this._settings.HueBridgeIpAddress != null;
         }
 
+    }
+
+    public class MainViewModelTile
+    {
+        public string Title { get; }
+
+        public ICommand NavigationCommand { get; }
+
+        public MainViewModelTile(string title, ICommand navigationCommand)
+        {
+            if (title == null)
+            {
+                throw new ArgumentNullException(nameof(title));
+            }
+
+            if (navigationCommand == null)
+            {
+                throw new ArgumentNullException(nameof(navigationCommand));
+            }
+
+            this.Title = title;
+            this.NavigationCommand = navigationCommand;
+        }
     }
 }

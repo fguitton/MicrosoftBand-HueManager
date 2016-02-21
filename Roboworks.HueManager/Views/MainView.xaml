@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:Roboworks.HueManager.Converters"
     xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:sys="using:System"
     prism:ViewModelLocator.AutoWireViewModel="true"
     mc:Ignorable="d"
     RequestedTheme="Dark"
@@ -41,7 +42,7 @@
                                             <Setter Target="BackgroundEffect.Opacity" Value="0.1" />
                                         </VisualState.Setters>
                                     </VisualState>
-                                    
+
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
 
@@ -62,139 +63,72 @@
                             />
 
                         </Grid>
-                        
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <Style x:Key="StepNumberText" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Top" />
+        <Style x:Key="TileTitleText" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Margin" Value="8" />
-            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="Thin" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
-        <Style x:Key="StepTitleText" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0, 48" />
-            <Setter Property="FontSize" Value="32" />
-            <Setter Property="FontWeight" Value="Thin" />
+
+        <DataTemplate x:Key="TileTemplate">
+
+            <Button
+                Style="{StaticResource StepButtonStyle}"
+                Command="{Binding Path=NavigationCommand, Mode=OneTime}"
+            >
+
+                <TextBlock 
+                    Text="{Binding Path=Title, Mode=OneTime}"
+                    Style="{StaticResource TileTitleText}"
+                />
+
+            </Button>
+
+        </DataTemplate>
+
+        <Style x:Key="TileContainerStyle" TargetType="ContentPresenter">
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
 
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="1" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <Button
+        <ScrollViewer 
             Grid.Row="0"
-            Style="{StaticResource StepButtonStyle}"
-            Command="{Binding Path=HueSetupOpenCommand, Mode=OneTime}"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto"
         >
-            <Grid>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <ItemsControl 
+                ItemTemplate="{StaticResource TileTemplate}"
+                ItemContainerStyle="{StaticResource TileContainerStyle}"
+                ItemsSource="{Binding Path=Tiles, Mode=OneTime}"
+            >
 
-                <TextBlock 
-                    Grid.Row="0"
-                    Text="Step 1" 
-                    Style="{StaticResource StepNumberText}"
-                />
+                <ItemsControl.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition 
+                            FromHorizontalOffset="40" 
+                            FromVerticalOffset="0" 
+                            IsStaggeringEnabled="True"
+                        />
+                    </TransitionCollection>
+                </ItemsControl.ItemContainerTransitions>
 
-                <TextBlock 
-                    Grid.Row="1"
-                    Text="Philips Hue" 
-                    Style="{StaticResource StepTitleText}"
-                />
+            </ItemsControl>
 
-                <Grid Grid.Row="2">
-
-                    <Grid
-                        Visibility="{Binding 
-                            Path=IsHueConfigured, 
-                            Converter={StaticResource BooleanToVisibilityInvertedConverter}
-                        }"
-                    >
-
-                        <TextBlock TextAlignment="Center">
-                            
-                            <Run Text="Not connected" />
-                            <LineBreak />
-                            <Run Text="Tap here to configure" />
-                            
-                        </TextBlock>
-
-                    </Grid>
-
-                    <Grid
-                        Visibility="{Binding 
-                            Path=IsHueConfigured, 
-                            Converter={StaticResource BooleanToVisibilityConverter}
-                        }"
-                    >
-
-
-                    </Grid>
-
-                </Grid>
-
-                <!--<ProgressRing 
-                    Grid.Row="2"
-                    IsActive="True" 
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="24"
-                />-->
-
-            </Grid>
-        </Button>
-
-        <Button 
-            Grid.Row="2"
-            Style="{StaticResource StepButtonStyle}"
-            Command="{Binding Path=BandSetupOpenCommand, Mode=OneTime}"
-        >
-            <Grid>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <TextBlock 
-                    Grid.Row="0"
-                    Text="Step 2" 
-                    Style="{StaticResource StepNumberText}"
-                />
-
-                <TextBlock 
-                    Grid.Row="1"
-                    Text="Microsoft Band" 
-                    Style="{StaticResource StepTitleText}"
-                />
-
-                <ProgressRing 
-                    Grid.Row="2"
-                    IsActive="True" 
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="24"
-                />
-
-            </Grid>
-        </Button>
+        </ScrollViewer>
 
     </Grid>
 
