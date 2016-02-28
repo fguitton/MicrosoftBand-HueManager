@@ -1,0 +1,105 @@
+﻿<Page
+    x:Class="Roboworks.Band.Tiles.PhilipsHue.PhilipsHueSetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Roboworks.Band.Tiles.PhilipsHue"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Roboworks.Band.Tiles.PhilipsHue.Controls"
+    xmlns:commonControls="using:Roboworks.Band.Common.Controls"
+    mc:Ignorable="d"
+>
+
+    <Page.Resources>
+
+        <!--<converter:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
+        <converter:NullableToVisibilityConverter 
+            x:Key="NullableToVisibilityConverterInverted" 
+            IsInverted="True" 
+        />-->
+
+        <Style TargetType="Pivot">
+            <!--<Setter Property="IsHitTestVisible" Value="False" />-->
+        </Style>
+
+        <Style TargetType="PivotHeaderPanel">
+            <Setter Property="Height" Value="0" />
+        </Style>
+
+        <Style TargetType="PivotHeaderItem">
+            <Setter Property="Height" Value="0" />
+        </Style>
+
+        <Style TargetType="PivotItem">
+            <Setter Property="Margin" Value="0" />
+        </Style>
+
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+
+            <VisualStateGroup x:Name="GeneralStates">
+
+                <VisualState x:Name="DisconnectedState">
+                    <VisualState.Setters>
+                        <Setter Target="ContentTransition.HorizontalOffset" Value="-40" />
+                        <Setter Target="ContentSwitcher.Content" Value="DisconnectedViewContent" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="ConnectingState">
+                    <VisualState.Setters>
+                        <Setter Target="ConnectingText.Visibility" Value="Visible" />
+                        <Setter Target="DisconnectingText.Visibility" Value="Collapsed" />
+                        <Setter Target="ContentTransition.HorizontalOffset" Value="40" />
+                        <Setter Target="ContentSwitcher.Content" Value="LoadingViewContent" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="ConnectedState">
+                    <VisualState.Setters>
+                        <Setter Target="ContentTransition.HorizontalOffset" Value="40" />
+                        <Setter Target="ContentSwitcher.Content" Value="ConnectedViewContent" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="DisconnectingState">
+                    <VisualState.Setters>
+                        <Setter Target="ConnectingText.Visibility" Value="Collapsed" />
+                        <Setter Target="DisconnectingText.Visibility" Value="Visible" />
+                        <Setter Target="ContentTransition.HorizontalOffset" Value="-40" />
+                        <Setter Target="ContentSwitcher.Content" Value="LoadingViewContent" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <commonControls:PageHeader 
+            Grid.Row="0"
+            Title="Philips Hue Setup" 
+        />
+
+        <Grid Grid.Row="1">
+
+            <controls:ConnectedView />
+
+            <controls:DisconnectedView />
+
+            <commonControls:BusyIndicator 
+                x:Uid="HueSetupView_ConnectingText" 
+            />
+
+        </Grid>
+
+
+    </Grid>
+    
+</Page>

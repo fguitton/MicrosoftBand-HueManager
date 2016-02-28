@@ -11,6 +11,7 @@
     prism:ViewModelLocator.AutoWireViewModel="true"
     mc:Ignorable="d"
     RequestedTheme="Dark"
+    x:Name="RoolElement"
 >
 
     <Page.Resources>
@@ -83,7 +84,8 @@
 
             <Button
                 Style="{StaticResource StepButtonStyle}"
-                Command="{Binding Path=NavigationCommand, Mode=OneTime}"
+                Command="{Binding ElementName=RoolElement, Path=DataContext.NavigationCommand, Mode=OneTime}"
+                CommandParameter="{Binding Path=ViewName, Mode=OneTime}"
             >
 
                 <TextBlock 

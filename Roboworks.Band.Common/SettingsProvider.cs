@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Windows.Storage;
 
-namespace Roboworks.HueManager
+namespace Roboworks.Band.Common
 {
     public interface ISettingsProvider
     {

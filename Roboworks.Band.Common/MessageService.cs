@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Windows.UI.Popups;
 
-namespace Roboworks.HueManager
+namespace Roboworks.Band.Common
 {
     public class MessageService
     {

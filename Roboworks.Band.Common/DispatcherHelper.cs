@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
-namespace Roboworks.HueManager
+namespace Roboworks.Band.Common
 {
     public static class DispatcherHelper
     {

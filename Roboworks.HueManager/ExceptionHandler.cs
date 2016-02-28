@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Roboworks.Band.Common;
+
 namespace Roboworks.HueManager
 {
     public static class ExceptionHandler

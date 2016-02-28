@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
 
 using Microsoft.Band;
 using Microsoft.Band.Tiles;
 using Microsoft.Band.Tiles.Pages;
 
 using Roboworks.Hue.Entities;
-using Windows.Storage.Streams;
-using Windows.Storage;
+using Roboworks.Band.Common;
 
-namespace Roboworks.HueManager.Services
+namespace Roboworks.Band.Tiles.PhilipsHue.Services
 {
     public interface IBandService
     {

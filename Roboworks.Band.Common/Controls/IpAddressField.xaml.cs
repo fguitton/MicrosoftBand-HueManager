@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Roboworks.HueManager.Controls
+namespace Roboworks.Band.Common.Controls
 {
     public sealed partial class IpAddressField : UserControl
     {

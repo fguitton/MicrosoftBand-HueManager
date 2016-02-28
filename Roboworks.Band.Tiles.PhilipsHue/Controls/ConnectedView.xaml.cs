@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -14,23 +12,14 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Popups;
-using Windows.UI.Core;
 
-namespace Roboworks.HueManager.Views
+namespace Roboworks.Band.Tiles.PhilipsHue.Controls
 {
-    public sealed partial class MainView : Page
+    public sealed partial class ConnectedView : UserControl
     {
-        public MainView()
+        public ConnectedView()
         {
-            try
-            {
-                this.InitializeComponent();
-            }
-            catch(Exception ex)
-            {
-                ExceptionHandler.Handle(ex);
-            }
+            this.InitializeComponent();
         }
     }
 }

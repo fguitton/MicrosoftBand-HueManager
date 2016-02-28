@@ -10,9 +10,10 @@ using Prism.Mvvm;
 using Prism.Windows.Navigation;
 
 using Roboworks.Hue;
-using Roboworks.HueManager.Services;
+using Roboworks.Band.Tiles.PhilipsHue.Services;
+using Roboworks.Band.Common;
 
-namespace Roboworks.HueManager.ViewModels
+namespace Roboworks.Band.Tiles.PhilipsHue
 {
     using HueEntities = Roboworks.Hue.Entities;
 
@@ -24,8 +25,9 @@ namespace Roboworks.HueManager.ViewModels
         Disconnecting
     }
 
-    public class HueSetupViewModel : BindableBase, INavigationAware
+    public class PhilipsHueSetupViewModel : BindableBase, INavigationAware
     {
+        private const string PhilipsHue_AppName = "BandEx";
         private const string IpAddressDefault = "192.168.0.0";
 
         private readonly IHueServiceProvider _hueServiceProvider;
@@ -52,7 +54,7 @@ namespace Roboworks.HueManager.ViewModels
             }
         }
         
-        private string _ipAddress = HueSetupViewModel.IpAddressDefault;
+        private string _ipAddress = PhilipsHueSetupViewModel.IpAddressDefault;
         public string IpAddress
         {
             get
@@ -100,7 +102,7 @@ namespace Roboworks.HueManager.ViewModels
 
 #endregion
 
-        public HueSetupViewModel(
+        public PhilipsHueSetupViewModel(
             IHueServiceProvider hueServiceProvider, 
             IBandService bandService,
             ISettingsProvider settingsProvider)
@@ -160,7 +162,10 @@ namespace Roboworks.HueManager.ViewModels
                 var ipAddress = this.IpAddress;
 
                 var hueApiUser = await 
-                    this._hueServiceProvider.HueApiUserCreate(ipAddress, Constants.AppName);
+                    this._hueServiceProvider.HueApiUserCreate(
+                        ipAddress, 
+                        PhilipsHueSetupViewModel.PhilipsHue_AppName
+                    );
 
                 this._settingsProvider.HueBridgeIpAddress = ipAddress;
                 this._settingsProvider.HueApiUserId = hueApiUser.UserId;

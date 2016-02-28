@@ -10,64 +10,61 @@ using System.Collections.ObjectModel;
 using Prism.Mvvm;
 using Prism.Commands;
 using Prism.Windows.Navigation;
+using Roboworks.Band.Common;
 
 namespace Roboworks.HueManager.ViewModels
 {
     public class MainViewModel : BindableBase
     {
 
-        private ISettingsProvider _settings;
+        private readonly INavigationService _navigationService;
 
 #region Properties
-
-        private bool _isHueConfigured = false;
-        public bool IsHueConfigured
-        {
-            get
-            {
-                return this._isHueConfigured;
-            }
-            set
-            {
-                this.SetProperty(ref this._isHueConfigured, value);
-            }
-        }
 
         public ReadOnlyCollection<MainViewModelTile> Tiles { get; }
 
 #endregion
 
-        public MainViewModel(INavigationService navigationService, ISettingsProvider settings)
+#region Commands
+
+        public ICommand NavigationCommand { get; }
+
+#endregion
+
+        public MainViewModel(INavigationService navigationService, ITileModel[] tileModels)
         {
-            if (settings == null)
+            if (navigationService == null)
             {
-                throw new ArgumentNullException(nameof(settings));
+                throw new ArgumentNullException(nameof(navigationService));
             }
 
-            this._settings = settings;
+            if (tileModels == null)
+            {
+                throw new ArgumentNullException(nameof(tileModels));
+            }
 
-            // TODO: split tiles implementation into separate modules (projects)
-            this.Tiles = 
-                new MainViewModelTile[]
-                {
-                    new MainViewModelTile(
-                        "Philips Hue", 
-                        new DelegateCommand(
-                            () => navigationService.Navigate(ViewNames.HueSetup, null),
-                            () => true
-                        )
-                    ),
-                    new MainViewModelTile(
-                        "Charge Reminder",
-                        new DelegateCommand(
-                            () => navigationService.Navigate(ViewNames.BandSetup, null),
-                            () => true
-                        )
-                    )
-                }.ToList().AsReadOnly();
+            this._navigationService = navigationService;
 
-            this.IsHueConfigured = this._settings.HueBridgeIpAddress != null;
+            this.NavigationCommand = new DelegateCommand<string>(this.NavigationCommand_Executed);
+
+            this.Tiles =
+                tileModels
+                    .Select(tileModel => new MainViewModelTile(tileModel.Title, tileModel.ViewName))
+                    .ToList()
+                    .AsReadOnly();
         }
+
+#region Private Methods
+
+        private void NavigationCommand_Executed(string viewName)
+        {
+            if (viewName != null)
+            {
+                this._navigationService.Navigate(viewName, null);
+            }
+        }
+
+#endregion
 
     }
 
@@ -75,22 +72,22 @@ namespace Roboworks.HueManager.ViewModels
     {
         public string Title { get; }
 
-        public ICommand NavigationCommand { get; }
+        public string ViewName { get; }
 
-        public MainViewModelTile(string title, ICommand navigationCommand)
+        public MainViewModelTile(string title, string viewName)
         {
             if (title == null)
             {
                 throw new ArgumentNullException(nameof(title));
             }
 
-            if (navigationCommand == null)
+            if (viewName == null)
             {
-                throw new ArgumentNullException(nameof(navigationCommand));
+                throw new ArgumentNullException(nameof(viewName));
             }
 
             this.Title = title;
-            this.NavigationCommand = navigationCommand;
+            this.ViewName = viewName;
         }
     }
 }

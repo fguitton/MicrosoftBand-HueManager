@@ -30,30 +30,25 @@ using Prism.Logging;
 
 using Roboworks.HueManager.Views;
 using Roboworks.HueManager.ViewModels;
-using Roboworks.Hue;
-using Roboworks.HueManager.Services;
+using Roboworks.Band.Common;
+using Roboworks.Band.Tiles.PhilipsHue;
 
 namespace Roboworks.HueManager
 {
     sealed partial class App : PrismUnityApplication
     {
-        private readonly ImmutableDictionary<string, Type> _viewNameToTypeMappings =
+
+        private readonly Dictionary<string, Type> _viewNameToTypeMappings =
             new Dictionary<string, Type>
             {
-                [ViewNames.Main] = typeof(MainView),
-                [ViewNames.HueSetup] = typeof(HueSetupView),
-                [ViewNames.BandSetup] = typeof(BandSetupView)
-            }
-            .ToImmutableDictionary();
+                [ViewNames.Main] = typeof(MainView)
+            };
 
-        private readonly ImmutableDictionary<Type, Type> _viewTypeToViewModelTypeMappings =
+        private readonly Dictionary<Type, Type> _viewTypeToViewModelTypeMappings =
             new Dictionary<Type, Type>
             {
-                [typeof(MainView)] = typeof(MainViewModel),
-                [typeof(HueSetupView)] = typeof(HueSetupViewModel),
-                [typeof(BandSetupView)] = typeof(BandSetupViewModel)
-            }
-            .ToImmutableDictionary();
+                [typeof(MainView)] = typeof(MainViewModel)
+            };
 
         public App()
         {
@@ -61,6 +56,8 @@ namespace Roboworks.HueManager
 
             this.InitializeComponent();
         }
+
+#region Overiden Methods
 
         //TODO: Implement ILoggerFacade
         protected override ILoggerFacade CreateLogger()
@@ -90,18 +87,13 @@ namespace Roboworks.HueManager
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
-
-            this.RegisterAsSingleton<ISettingsProvider, SettingsProvider>();
-
-            // Services
-            this.RegisterAsSingleton<IHueServiceProvider, HueServiceProvider>();
-            this.RegisterAsSingleton<IBandService, BandService>();
-
-            // Views
-            this.RegisterAsSingleton<MainView>(ViewNames.Main);
-            this.RegisterAsSingleton<HueSetupView>(ViewNames.HueSetup);
-            this.RegisterAsSingleton<BandSetupView>(ViewNames.BandSetup);
+            
+            this.DependenciesRegister();
+            this.ViewsRegister();
+            this.ModulesRegister();
         }
+
+#endregion
 
 #region Private Methods
 
@@ -116,14 +108,32 @@ namespace Roboworks.HueManager
             return this._viewNameToTypeMappings[viewName];
         }
 
-        private void RegisterAsSingleton<T>(string name)
+        private void DependenciesRegister()
         {
-            this.Container.RegisterType<T>(name, new ContainerControlledLifetimeManager());
+            this.Container.RegisterAsSingleton<ISettingsProvider, SettingsProvider>();
         }
 
-        private void RegisterAsSingleton<TFrom, TTo>() where TTo : TFrom
+        private void ViewsRegister()
         {
-            this.Container.RegisterType<TFrom, TTo>(new ContainerControlledLifetimeManager());
+            this.Container.RegisterAsSingleton<MainView>(ViewNames.Main);
+        }
+
+        private void ModulesRegister()
+        {
+            var modules = new IModule[] { new PhilipsHueModule() };
+            foreach(var module in modules)
+            {
+                module.RegisterTypes(this.Container);
+            }
+
+            var tileModels = this.Container.ResolveAll<ITileModel>();
+            foreach(var tileModel in tileModels)
+            {
+                this.Container.RegisterAsSingleton(tileModel.ViewType, tileModel.ViewName);
+
+                this._viewNameToTypeMappings.Add(tileModel.ViewName, tileModel.ViewType);
+                this._viewTypeToViewModelTypeMappings.Add(tileModel.ViewType, tileModel.ViewModelType);
+            }
         }
 
 #endregion

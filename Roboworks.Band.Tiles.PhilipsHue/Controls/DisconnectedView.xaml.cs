@@ -13,16 +13,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Roboworks.HueManager.Views
+namespace Roboworks.Band.Tiles.PhilipsHue.Controls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class BandSetupView : Page
+    public sealed partial class DisconnectedView : UserControl
     {
-        public BandSetupView()
+        public DisconnectedView()
         {
             this.InitializeComponent();
         }

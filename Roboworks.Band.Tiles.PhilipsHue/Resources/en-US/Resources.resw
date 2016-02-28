@@ -117,4 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="HueErrorType_LinkButtonNotPressed" xml:space="preserve">
+    <value>Link button on Philips Hue Bridge should be pressed before trying to connect.</value>
+  </data>
+  <data name="HueErrorType_ResourceIsNotAvailable" xml:space="preserve">
+    <value>Requested resource cannot be found in the Philips Hue Bridge API.</value>
+  </data>
+  <data name="HueSetupView_ConnectFailedMessage" xml:space="preserve">
+    <value>There was a problem trying to connect to the Hue Bridge.</value>
+  </data>
+  <data name="HueSetupView_ConnectFailedTitle" xml:space="preserve">
+    <value>Connection failed</value>
+  </data>
+  <data name="HueSetupView_ConnectingText.Text" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="HueSetupView_DisconnectingText.Text" xml:space="preserve">
+    <value>Disconnecting...</value>
+  </data>
+  <data name="TileTitle" xml:space="preserve">
+    <value>Philips Hue</value>
+  </data>
 </root>

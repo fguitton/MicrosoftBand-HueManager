@@ -15,31 +15,31 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Roboworks.HueManager.Controls
+namespace Roboworks.Band.Common.Controls
 {
-    public sealed partial class PageHeader : UserControl
+    public sealed partial class BusyIndicator : UserControl
     {
-        public static DependencyProperty TitleProperty =
+        public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register(
-                "Title", 
-                typeof(string), 
-                typeof(PageHeader), 
+                "Text",
+                typeof(string),
+                typeof(BusyIndicator),
                 new PropertyMetadata(null)
             );
 
-        public string Title
+        public string Text
         {
             get
             {
-                return (string)this.GetValue(PageHeader.TitleProperty);
+                return (string)this.GetValue(BusyIndicator.TextProperty);
             }
             set
             {
-                this.SetValue(PageHeader.TitleProperty, value);
+                this.SetValue(BusyIndicator.TextProperty, value);
             }
         }
 
-        public PageHeader()
+        public BusyIndicator()
         {
             this.InitializeComponent();
         }
