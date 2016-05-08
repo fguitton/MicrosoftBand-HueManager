@@ -47,6 +47,22 @@ namespace Roboworks.Band.Tiles.PhilipsHue
             }
         }
 
+        public static string HueSetupView_ConnectingText
+        {
+            get
+            {
+                return ResourceManager.ResourceLoader.GetString("HueSetupView_ConnectingText");
+            }
+        }
+        
+        public static string HueSetupView_DisconnectingText
+        {
+            get
+            {
+                return ResourceManager.ResourceLoader.GetString("HueSetupView_DisconnectingText");
+            }
+        }
+
 #endregion
 
 #region Extensions

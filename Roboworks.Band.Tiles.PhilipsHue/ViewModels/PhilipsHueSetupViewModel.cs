@@ -13,7 +13,7 @@ using Roboworks.Hue;
 using Roboworks.Band.Tiles.PhilipsHue.Services;
 using Roboworks.Band.Common;
 
-namespace Roboworks.Band.Tiles.PhilipsHue
+namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
 {
     using HueEntities = Roboworks.Hue.Entities;
 

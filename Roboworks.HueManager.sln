@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboworks.HueManager", "Roboworks.HueManager\Roboworks.HueManager.csproj", "{9FB65C11-213D-4CC1-B3B1-3370B4EB2056}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboworks.Band.Tiles.ChargeNotifier", "Roboworks.Band.Tiles.ChargeNotifier\Roboworks.Band.Tiles.ChargeNotifier.csproj", "{5457FF89-1C72-49B6-9F08-8E33D9985EA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboworks.Band.Common", "Roboworks.Band.Common\Roboworks.Band.Common.csproj", "{962AEFB0-8AB3-4078-9F12-13A817D94CB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboworks.Band.Common.UTests", "Roboworks.Band.Common.UTests\Roboworks.Band.Common.UTests.csproj", "{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +177,26 @@ Global
 		{962AEFB0-8AB3-4078-9F12-13A817D94CB4}.Release|x64.Build.0 = Release|x64
 		{962AEFB0-8AB3-4078-9F12-13A817D94CB4}.Release|x86.ActiveCfg = Release|x86
 		{962AEFB0-8AB3-4078-9F12-13A817D94CB4}.Release|x86.Build.0 = Release|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|ARM.ActiveCfg = Debug|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|ARM.Build.0 = Debug|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|ARM.Deploy.0 = Debug|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x64.ActiveCfg = Debug|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x64.Build.0 = Debug|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x64.Deploy.0 = Debug|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x86.ActiveCfg = Debug|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x86.Build.0 = Debug|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Debug|x86.Deploy.0 = Debug|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|Any CPU.ActiveCfg = Release|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|ARM.ActiveCfg = Release|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|ARM.Build.0 = Release|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|ARM.Deploy.0 = Release|ARM
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x64.ActiveCfg = Release|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x64.Build.0 = Release|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x64.Deploy.0 = Release|x64
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x86.ActiveCfg = Release|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x86.Build.0 = Release|x86
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -185,5 +207,6 @@ Global
 		{F8A79E67-0C47-4EB4-958C-1A082647B007} = {BAA797A8-3B60-41D2-B894-10B4941FF206}
 		{FABFC067-2C47-4227-BB10-17A1834755FC} = {BAA797A8-3B60-41D2-B894-10B4941FF206}
 		{5457FF89-1C72-49B6-9F08-8E33D9985EA5} = {BAA797A8-3B60-41D2-B894-10B4941FF206}
+		{AA761B58-07AE-4343-81E4-6A0DCD34F5F0} = {B750111D-501D-47B1-9A3D-F9EAC4278F08}
 	EndGlobalSection
 EndGlobal

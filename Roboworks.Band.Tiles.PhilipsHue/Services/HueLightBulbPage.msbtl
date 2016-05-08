@@ -1,0 +1,146 @@
+{
+  "$type": "DesignerContents",
+  "DesignerState": {
+    "$type": "DesignerState",
+    "BandLayout": {
+      "$type": "BandLayout",
+      "Version": {
+        "$type": "Version",
+        "Major": 2,
+        "Build": -1,
+        "Revision": -1
+      },
+      "BandTheme": {
+        "$type": "Theme",
+        "Base": "R: 51, G: 102, B: 204",
+        "HighContrast": "R: 58, G: 120, B: 221",
+        "Highlight": "R: 58, G: 120, B: 221",
+        "Lowlight": "R: 49, G: 101, B: 186",
+        "Muted": "R: 43, G: 90, B: 165",
+        "SecondaryText": "R: 137, G: 151, B: 171"
+      },
+      "TileTheme": {
+        "$type": "Theme",
+        "Base": "R: 51, G: 102, B: 204",
+        "HighContrast": "R: 58, G: 120, B: 221",
+        "Highlight": "R: 58, G: 120, B: 221",
+        "Lowlight": "R: 49, G: 101, B: 186",
+        "Muted": "R: 43, G: 90, B: 165",
+        "SecondaryText": "R: 137, G: 151, B: 171"
+      },
+      "RootPanel": {
+        "$type": "ScrollFlowPanel",
+        "ScrollBarColor": "R: 255, G: 255, B: 255",
+        "Elements": {
+          "$type": "Elements",
+          "$values": [
+            {
+              "$type": "FlowPanel",
+              "Elements": {
+                "$type": "Elements",
+                "$values": [
+                  {
+                    "$type": "TextBlock",
+                    "Baseline": 30,
+                    "BaselineAlignment": 1,
+                    "AutoWidth": true,
+                    "ColorSource": 2,
+                    "Color": "R: 255, G: 255, B: 255",
+                    "Text": "{0}",
+                    "Name": "BulbName",
+                    "ElementId": 3,
+                    "Id": "faafaf60-1b0e-4e40-8015-3c4e2c77bb10",
+                    "Width": 32,
+                    "Height": 30
+                  },
+                  {
+                    "$type": "TextBlock",
+                    "Baseline": 60,
+                    "BaselineAlignment": 1,
+                    "AutoWidth": true,
+                    "Color": "R: 255, G: 255, B: 255",
+                    "Text": "Brightness: {0}%",
+                    "Name": "Brightness",
+                    "ElementId": 4,
+                    "Id": "f19e08cd-c8d8-4428-a018-0d1aad2d5aa7",
+                    "Width": 32,
+                    "Height": 30
+                  },
+                  {
+                    "$type": "FlowPanel",
+                    "Orientation": 1,
+                    "Elements": {
+                      "$type": "Elements",
+                      "$values": [
+                        {
+                          "$type": "TextButton",
+                          "PressedColor": "R: 32, G: 32, B: 32",
+                          "Text": "<",
+                          "Name": "DimButton",
+                          "ElementId": 6,
+                          "Id": "107508ab-c7ce-48b9-92d8-37bc678633a2",
+                          "Width": 48,
+                          "Height": 48,
+                          "HorizontalAlignment": 2
+                        },
+                        {
+                          "$type": "TextButton",
+                          "PressedColor": "R: 32, G: 32, B: 32",
+                          "Text": "ON / OFF",
+                          "Name": "OnOffButton",
+                          "ElementId": 7,
+                          "Id": "8582fa77-5835-4954-ac66-a44fe4e6ed49",
+                          "Width": 129,
+                          "Height": 48,
+                          "LeftMargin": 8,
+                          "RightMargin": 8,
+                          "HorizontalAlignment": 2
+                        },
+                        {
+                          "$type": "TextButton",
+                          "PressedColor": "R: 32, G: 32, B: 32",
+                          "Text": ">",
+                          "Name": "BrightenButton",
+                          "ElementId": 8,
+                          "Id": "ebaaed1e-a7e9-45c1-aaec-aeb4521a8e94",
+                          "Width": 48,
+                          "Height": 48,
+                          "HorizontalAlignment": 2
+                        }
+                      ]
+                    },
+                    "Name": "",
+                    "ElementId": 5,
+                    "Id": "f556a98b-ca42-4843-9084-901c400a984d",
+                    "Width": 243,
+                    "Height": 48,
+                    "TopMargin": 8
+                  }
+                ]
+              },
+              "Name": "",
+              "ElementId": 2,
+              "Id": "79c547c1-1373-4287-90af-9ebbe21439e9",
+              "Width": 243,
+              "Height": 122,
+              "LeftMargin": 6,
+              "TopMargin": 6
+            }
+          ]
+        },
+        "Name": "",
+        "ElementId": 1,
+        "Id": "d1d8592d-c50e-4ace-adee-771fd555c303",
+        "Width": 258,
+        "Height": 128
+      }
+    },
+    "SelectedElements": {
+      "$type": "IdList",
+      "$values": [
+        "f19e08cd-c8d8-4428-a018-0d1aad2d5aa7"
+      ]
+    }
+  },
+  "ZoomPercent": 150.0
+}

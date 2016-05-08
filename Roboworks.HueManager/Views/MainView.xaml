@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:Roboworks.HueManager.Converters"
     xmlns:prism="using:Prism.Windows.Mvvm"
-    xmlns:sys="using:System"
     prism:ViewModelLocator.AutoWireViewModel="true"
     mc:Ignorable="d"
     RequestedTheme="Dark"
@@ -120,11 +119,11 @@
 
                 <ItemsControl.ItemContainerTransitions>
                     <TransitionCollection>
+                        
                         <EntranceThemeTransition 
-                            FromHorizontalOffset="40" 
-                            FromVerticalOffset="0" 
                             IsStaggeringEnabled="True"
                         />
+                        
                     </TransitionCollection>
                 </ItemsControl.ItemContainerTransitions>
 

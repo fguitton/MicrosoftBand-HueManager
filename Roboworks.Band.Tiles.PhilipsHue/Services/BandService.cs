@@ -36,28 +36,15 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
 
     public class BandService : IBandService, IDisposable
     {
+        private const string TileIconUri = "ms-appx:///Assets/TileIcons/LightBulb.png";
+        private const string TileIconSmallUri = "ms-appx:///Assets/TileIcons/LightBulb_Small.png";
+
+        private readonly HueLightBulbPage _hueLightBulbPage = new HueLightBulbPage();
+
         private IBandInfo _pairedBand = null;
         private IBandClient _bandClient = null;
 
         private Dictionary<Guid, string> _pageBulbIds = new Dictionary<Guid, string>();
-
-        private enum ElementIds : ushort
-        {
-            BulbName = 1,
-
-            BulbIsOn_Title,
-            BulbIsOn_Value,
-
-            BulbBrightness_Title,
-            BulbBrightness_Value,
-
-            BulbIsReachable_Title,
-            BulbIsReachable_Value,
-
-            BulbBrightnessDown,
-            BulbBrightnessUp,
-            BulbSwitch,
-        }
 
 #region Events
 
@@ -134,49 +121,36 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
         {
             this.BandClientCheck();
             
-            Guid tileGuid = Guid.NewGuid();
+            var loadIconMethod = this._hueLightBulbPage.LoadIconMethod;
+            
             var tile = 
-                new BandTile(tileGuid)
+                new BandTile(Guid.NewGuid())
                 {
                     IsBadgingEnabled = true,
                     Name = "Hue",
-                    SmallIcon =
-                        await this.TileIconCreate("ms-appx:///Assets/TileIcons/LightBulb_Small.png", 24, 24),
-                    TileIcon = 
-                        await this.TileIconCreate("ms-appx:///Assets/TileIcons/LightBulb.png", 48, 48)
+                    SmallIcon = await loadIconMethod.Invoke(BandService.TileIconSmallUri),
+                    TileIcon = await loadIconMethod.Invoke(BandService.TileIconUri)
                 };
             
-            //var pageDataList = new List<PageData>(hueLightBulbs.Length);
-            //var pageLayoutIndex = 0;
+            var pageDataList = new List<PageData>(hueLightBulbs.Length);
 
-            //this._pageBulbIds.Clear();
+            this._pageBulbIds.Clear();
 
-            //foreach(var hueLightBulb in hueLightBulbs)
-            //{
-            //    var pageLayout = 
-            //        new PageLayout(
-            //            new ScrollFlowPanel()
-            //            {
-            //                Rect = new PageRect(0, 0, 258, 128),
-            //                Orientation = FlowPanelOrientation.Vertical,
-            //                ScrollBarColorSource = ElementColorSource.BandHighlight
-            //            }
-            //        );
-            //    var pageId = Guid.NewGuid();
-            //    var pageData = new PageData(pageId, pageLayoutIndex++);
+            foreach (var hueLightBulb in hueLightBulbs)
+            {
+                var pageData = new PageData(Guid.NewGuid(), tile.PageLayouts.Count);
+                this.PageDataPopulate(pageData, hueLightBulb);
 
-            //    this._pageBulbIds.Add(pageId, hueLightBulb.Id);
-
-            //    this.TilePageLayoutPopulate(hueLightBulb, pageLayout, pageData);
+                this._pageBulbIds.Add(pageData.PageId, hueLightBulb.Id);
                 
-            //    tile.PageLayouts.Add(pageLayout);
-            //    pageDataList.Add(pageData);
-            //}
-            
-            await this._bandClient.TileManager.AddTileAsync(tile);
-            //await this._bandClient.TileManager.SetPagesAsync(tileGuid, pageDataList);
+                tile.PageLayouts.Add(this._hueLightBulbPage.Layout);
+                pageDataList.Add(pageData);
+            }
 
-            //await this._bandClient.TileManager.StartReadingsAsync();
+            await this._bandClient.TileManager.AddTileAsync(tile);
+            await this._bandClient.TileManager.SetPagesAsync(tile.TileId, pageDataList);
+
+            await this._bandClient.TileManager.StartReadingsAsync();
         }
 
         public async Task BandTileDelete()
@@ -195,18 +169,18 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
 
 #region Private Methods
 
-        private async Task<BandIcon> TileIconCreate(string fileUri, int width, int height)
-        {
-            var bitmap = new WriteableBitmap(width, height);
-            var imageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileUri));
+        //private async Task<BandIcon> TileIconCreate(string fileUri, int width, int height)
+        //{
+        //    var bitmap = new WriteableBitmap(width, height);
+        //    var imageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(fileUri));
 
-            using (var fileStream = await imageFile.OpenAsync(FileAccessMode.Read))
-            {    
-                await bitmap.SetSourceAsync(fileStream);
-            }
+        //    using (var fileStream = await imageFile.OpenAsync(FileAccessMode.Read))
+        //    {    
+        //        await bitmap.SetSourceAsync(fileStream);
+        //    }
 
-            return bitmap.ToBandIcon();
-        }
+        //    return bitmap.ToBandIcon();
+        //}
 
         private void BandClientCheck()
         {
@@ -221,155 +195,30 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
             }
         }
 
-        private void TilePageLayoutPopulate(
-            HueLightBulb hueLightBulb,
-            PageLayout pageLayout, 
-            PageData pageData)
+        private void PageDataPopulate(PageData pageData, HueLightBulb hueLightBulb)
         {
-
-            pageLayout.Root.Elements.Add(
-                new WrappedTextBlock()
-                {
-                    ElementId = (short)ElementIds.BulbName,
-                    Rect = new PageRect(0, 0, 243, 0),
-                    AutoHeight = true,
-                    ColorSource = ElementColorSource.BandHighlight,
-                    Font = WrappedTextBlockFont.Small,
-                    HorizontalAlignment = HorizontalAlignment.Left
-                }
+            pageData.Values.Add(
+                new TextBlockData(
+                    this._hueLightBulbPage.BulbName.ElementId.Value, 
+                    string.Format(this._hueLightBulbPage.BulbNameData.Text, hueLightBulb.Name)
+                )
             );
 
             pageData.Values.Add(
-                new WrappedTextBlockData((short)ElementIds.BulbName, hueLightBulb.Name)
+                new TextBlockData(
+                    this._hueLightBulbPage.Brightness.ElementId.Value, 
+                    string.Format(
+                        this._hueLightBulbPage.BrightnessData.Text, 
+                        hueLightBulb.Brightness.ToPercentage()
+                    )
+                )
             );
 
-            this.TilePageBulbInfoAdd(hueLightBulb, pageLayout, pageData);
-            this.TilePageBulbControlAdd(hueLightBulb, pageLayout, pageData);
+            pageData.Values.Add(this._hueLightBulbPage.DimButtonData);
+            pageData.Values.Add(this._hueLightBulbPage.OnOffButtonData);
+            pageData.Values.Add(this._hueLightBulbPage.BrightenButtonData);
         }
-
-        private void TilePageBulbInfoAdd(HueLightBulb hueLightBulb, PageLayout pageLayout, PageData pageData)
-        {
-            // Is ON
-
-            //this.TilePanelTextAdd(
-            //    pageLayout.Root, 
-            //    pageData, 
-            //    (short)ElementIds.BulbIsOn_Title, 
-            //    "Is ON:", 
-            //    HorizontalAlignment.Left
-            //);
-
-            //this.TilePanelTextAdd(
-            //    pageLayout.Root, 
-            //    pageData, 
-            //    (short)ElementIds.BulbIsOn_Value, 
-            //    hueLightBulb.IsOn.ToString(), 
-            //    HorizontalAlignment.Right
-            //);
-
-            // Brightness
-
-            //this.TilePanelTextAdd(
-            //    pageLayout.Root, 
-            //    pageData, 
-            //    (short)ElementIds.BulbBrightness_Title, 
-            //    "Brightness:", 
-            //    HorizontalAlignment.Left
-            //);
-
-            //this.TilePanelTextAdd(
-            //    pageLayout.Root, 
-            //    pageData, 
-            //    (short)ElementIds.BulbBrightness_Value, 
-            //    hueLightBulb.Brightness.ToString(),
-            //    HorizontalAlignment.Right
-            //);
-
-            // Is reachable
-
-            this.TilePanelTextAdd(
-                pageLayout.Root, 
-                pageData, 
-                (short)ElementIds.BulbIsReachable_Title, 
-                "Is reachable:", 
-                HorizontalAlignment.Left
-            );
-
-            this.TilePanelTextAdd(
-                pageLayout.Root, 
-                pageData, 
-                (short)ElementIds.BulbIsReachable_Value, 
-                hueLightBulb.IsReachable.ToString(),
-                HorizontalAlignment.Right
-            );
-        }
-
-        private void TilePageBulbControlAdd(HueLightBulb hueLightBulb, PageLayout pageLayout, PageData pageData)
-        {
-            var panel = 
-                new FlowPanel()
-                {
-                    //ElementId = elementId,
-                    Orientation = FlowPanelOrientation.Horizontal,
-                    Rect = new PageRect(0, 0, 243, 48),
-                    Margins = new Margins (0, 10, 0, 0)
-                };
-
-            panel.Elements.Add(
-                new TextButton()
-                {
-                    ElementId = (short)ElementIds.BulbBrightnessDown,
-                    Rect = new PageRect(0, 0, 48, 48),
-                    HorizontalAlignment = HorizontalAlignment.Center
-                }
-            );
-            pageData.Values.Add(new TextButtonData((short)ElementIds.BulbBrightnessDown, "<"));
-
-            panel.Elements.Add(
-                new TextButton()
-                {
-                    ElementId = (short)ElementIds.BulbSwitch,
-                    Margins = new Margins(10, 0, 10, 0),
-                    Rect = new PageRect(0, 0, 127, 48),
-                    HorizontalAlignment = HorizontalAlignment.Center
-                }
-            );
-            pageData.Values.Add(new TextButtonData((short)ElementIds.BulbSwitch, "ON / OFF"));
-
-            panel.Elements.Add(
-                new TextButton()
-                {
-                    ElementId = (short)ElementIds.BulbBrightnessUp,
-                    Rect = new PageRect(0, 0, 48, 48),
-                    HorizontalAlignment = HorizontalAlignment.Center
-                }
-            );
-            pageData.Values.Add(new TextButtonData((short)ElementIds.BulbBrightnessUp, ">"));
-
-            pageLayout.Root.Elements.Add(panel);
-        }
-
-        private void TilePanelTextAdd(
-            PagePanel pagePanel, 
-            PageData pageData, 
-            short elementId, 
-            string value, 
-            HorizontalAlignment horizontalAlignment)
-        {
-            pagePanel.Elements.Add(
-                new WrappedTextBlock()
-                {
-                    ElementId = elementId,
-                    Rect = new PageRect(0, 0, 243, 0),
-                    AutoHeight = true,
-                    Font = WrappedTextBlockFont.Small,
-                    HorizontalAlignment = horizontalAlignment
-                }
-            );
-
-            pageData.Values.Add(new WrappedTextBlockData(elementId, value));
-        }
-
+        
         private async void TileManager_TileButtonPressed(
             object sender, 
             BandTileEventArgs<IBandTileButtonPressedEvent> e)
@@ -378,26 +227,24 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
                 () => this.TileButtonPressedProcess(e.TileEvent.PageId, e.TileEvent.ElementId)
             );
         }
-
+        
         private void TileButtonPressedProcess(Guid pageId, ushort elementId)
         {
             if (this._pageBulbIds.ContainsKey(pageId))
             {
                 var eventArgs = new BulbEventArgs(this._pageBulbIds[pageId]);
 
-                switch((ElementIds)elementId)
+                if (this._hueLightBulbPage.OnOffButton.ElementId == elementId)
                 {
-                    case ElementIds.BulbSwitch:
-                        this.OnBulbSwitchRequested(eventArgs);
-                        break;
-
-                    case ElementIds.BulbBrightnessUp:
-                        this.OnBulbBrightnessUpRequested(eventArgs);
-                        break;
-
-                    case ElementIds.BulbBrightnessDown:
-                        this.OnBulbBrightnessDownRequested(eventArgs);
-                        break;
+                    this.OnBulbSwitchRequested(eventArgs);
+                }
+                else if (this._hueLightBulbPage.BrightenButton.ElementId == elementId)
+                {
+                    this.OnBulbBrightnessUpRequested(eventArgs);
+                }
+                else if (this._hueLightBulbPage.DimButtonData.ElementId == elementId)
+                {
+                    this.OnBulbBrightnessDownRequested(eventArgs);
                 }
             }
         }
@@ -422,6 +269,7 @@ namespace Roboworks.Band.Tiles.PhilipsHue.Services
                 {
                     if (this._bandClient != null)
                     {
+                        //this._bandClient.TileManager.StopReadingsAsync().Wait();
                         this._bandClient.TileManager.TileButtonPressed -= this.TileManager_TileButtonPressed;
 
                         this._bandClient.Dispose();

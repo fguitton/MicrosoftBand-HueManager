@@ -129,10 +129,10 @@
   <data name="HueSetupView_ConnectFailedTitle" xml:space="preserve">
     <value>Connection failed</value>
   </data>
-  <data name="HueSetupView_ConnectingText.Text" xml:space="preserve">
+  <data name="HueSetupView_ConnectingText" xml:space="preserve">
     <value>Connecting...</value>
   </data>
-  <data name="HueSetupView_DisconnectingText.Text" xml:space="preserve">
+  <data name="HueSetupView_DisconnectingText" xml:space="preserve">
     <value>Disconnecting...</value>
   </data>
   <data name="TileTitle" xml:space="preserve">
