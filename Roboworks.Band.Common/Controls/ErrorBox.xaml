@@ -32,13 +32,13 @@
         >
             
             <Run
-                Text="{x:Bind Title, Mode=OneWay}"
+                Text="{x:Bind Path=ErrorInfo.Title, Mode=OneWay}"
                 FontWeight="Bold"
             />
                 
             <LineBreak />
             
-            <Run Text="{x:Bind Message, Mode=OneWay}" />
+            <Run Text="{x:Bind Path=ErrorInfo.Message, Mode=OneWay}" />
 
         </TextBlock>
 

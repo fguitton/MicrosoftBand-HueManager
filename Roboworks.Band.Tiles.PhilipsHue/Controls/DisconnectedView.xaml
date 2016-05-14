@@ -13,17 +13,6 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <!--<Grid.Transitions>
-            <TransitionCollection>
-
-                <EntranceThemeTransition 
-                    FromHorizontalOffset="-40"
-                    FromVerticalOffset="0" 
-                />
-
-            </TransitionCollection>
-        </Grid.Transitions>-->
-
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
@@ -78,7 +67,7 @@
                 <controls:IpAddressField 
         			HorizontalAlignment="Stretch"
         			Margin="0,8,0,0"
-        			IpAddress="{Binding IpAddress, Mode=TwoWay}"
+        			IpAddress="{x:Bind Path=IpAddress, Mode=TwoWay}"
                 />
 
             </StackPanel>
@@ -90,6 +79,7 @@
             <controls:ErrorBox
                 x:Name="ErrorBox"
                 Margin="8"
+                ErrorInfo="{x:Bind Path=ErrorInfo, Mode=OneWay}"
             />
 
         </Grid>
@@ -100,20 +90,8 @@
         		Content="Connect"
         		HorizontalAlignment="Stretch"
         		Margin="8"
-                Command="{Binding Path=ConnectCommand, Mode=OneTime}"
+                Command="{x:Bind Path=ConnectCommand, Mode=OneWay}"
             />
-
-            <!--<Button
-                Content="Disconnect"
-                HorizontalAlignment="Stretch"
-                Margin="8"
-                Command="{Binding Path=DisconnectCommand, Mode=OneTime}"
-                Visibility="{Binding 
-                    Path=HueBridgeInfo, 
-                    Mode=OneWay,
-                    Converter={StaticResource NullableToVisibilityConverter}
-                }"
-            />-->
 
         </Grid>
 

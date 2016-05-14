@@ -18,49 +18,34 @@ namespace Roboworks.Band.Common.Controls
 {
     public sealed partial class ErrorBox : UserControl
     {
-        public static readonly DependencyProperty TitleProperty = 
-            DependencyProperty.Register(
-                "Title",
-                typeof(string),
-                typeof(ErrorBox),
-                new PropertyMetadata(null)
-            );
-
-        public static readonly DependencyProperty MessageProperty = 
-            DependencyProperty.Register(
-                "Message",
-                typeof(string),
-                typeof(ErrorBox),
-                new PropertyMetadata(null)
-            );
 
 #region Properties
 
-        public string Title
+        public static readonly DependencyProperty ErrorInfoProperty;
+        public ErrorInfo ErrorInfo
         {
             get
             {
-                return (string)this.GetValue(ErrorBox.TitleProperty);
+                return (ErrorInfo)this.GetValue(ErrorBox.ErrorInfoProperty);
             }
             set
             {
-                this.SetValue(ErrorBox.TitleProperty, value);
-            }
-        }
-
-        public string Message
-        {
-            get
-            {
-                return (string)this.GetValue(ErrorBox.MessageProperty);
-            }
-            set
-            {
-                this.SetValue(ErrorBox.MessageProperty, value);
+                this.SetValue(ErrorBox.ErrorInfoProperty, value);
             }
         }
 
 #endregion
+
+        static ErrorBox()
+        {
+            ErrorBox.ErrorInfoProperty = 
+                DependencyProperty.Register(
+                    nameof(ErrorBox.ErrorInfo), 
+                    typeof(ErrorInfo), 
+                    typeof(ErrorBox),
+                    new PropertyMetadata(null)
+                );
+        }
 
         public ErrorBox()
         {
@@ -71,10 +56,38 @@ namespace Roboworks.Band.Common.Controls
         
         private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageService.DialogShow(this.Title, this.Message);
+            if (this.ErrorInfo != null)
+            {
+                MessageService.DialogShow(this.ErrorInfo.Title, this.ErrorInfo.Message);
+            }
         }
 
 #endregion
 
+
+
+    }
+
+    public class ErrorInfo
+    {
+        public string Title { get; }
+
+        public string Message { get; }
+
+        public ErrorInfo(string title, string message)
+        {
+            if (title == null)
+            {
+                throw new ArgumentNullException(nameof(title));
+            }
+
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            this.Title = title;
+            this.Message = message;
+        }
     }
 }

@@ -118,6 +118,7 @@
     <Compile Include="Controls\DisconnectedView.xaml.cs">
       <DependentUpon>DisconnectedView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\ExceptionToErrorInfoConverter.cs" />
     <Compile Include="Services\HueLightBulbPage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

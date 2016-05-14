@@ -10,46 +10,12 @@
     d:DesignWidth="200"
 >
 
-    <UserControl.Resources>
+    <Grid>
 
-        <DataTemplate x:Key="TextContainerDataTemplate">
-
-            <TextBlock 
-                Text="{Binding Mode=OneWay}"
-                FontSize="24"
-                FontWeight="Thin"
-            >
-                <!--<TextBlock.Transitions>
-                    <TransitionCollection>
-
-                        <EntranceThemeTransition
-                            FromHorizontalOffset="40"
-                            FromVerticalOffset="0"
-                        />
-
-                    </TransitionCollection>
-                </TextBlock.Transitions>-->
-            </TextBlock>
-
-        </DataTemplate>
-        
-    </UserControl.Resources>
-
-    <Grid x:Name="RootPanel" Visibility="Collapsed">
-
-        <Grid x:Name="BackgroundPanel">
-
-            <Image 
-                x:Name="BackgroundImage" 
-                Source="{x:Bind Path=BackgroundImageSource, Mode=OneWay}"
-            />
-
-            <Border
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                Opacity="0.5"
-            />
-
-        </Grid>
+        <Border
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            Opacity="0.92"
+        />
 
         <StackPanel 
         	Orientation="Vertical"
@@ -62,24 +28,16 @@
         		HorizontalAlignment="Center"
                 Width="64"
                 Height="64"
+                IsActive="True"
             />
 
-            <ContentControl 
-                x:Name="TextBlockContainer"
-                Content="{x:Bind Path=Text, Mode=OneWay}"
-                HorizontalAlignment="Center"
+            <TextBlock 
+                Text="{x:Bind Path=Text, Mode=OneWay}"
                 Margin="0,24,0,0"
-                ContentTemplate="{StaticResource TextContainerDataTemplate}"
-            >
-                <ContentControl.ContentTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition
-                            FromHorizontalOffset="40"
-                            FromVerticalOffset="0"
-                        />
-                    </TransitionCollection>
-                </ContentControl.ContentTransitions>
-            </ContentControl>
+                FontSize="24"
+                FontWeight="Thin"
+                HorizontalAlignment="Center"
+            />
 
         </StackPanel>
 

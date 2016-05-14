@@ -119,6 +119,7 @@
     <Compile Include="Controls\PageHeader.xaml.cs">
       <DependentUpon>PageHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\ObjectToBooleanConverter.cs" />
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IModule.cs" />

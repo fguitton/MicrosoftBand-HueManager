@@ -15,15 +15,8 @@ using Roboworks.Band.Common;
 
 namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
 {
+    using Hue.Entities;
     using HueEntities = Roboworks.Hue.Entities;
-
-    public enum HueSetupViewModelState
-    {
-        Disconnected = 1,
-        Connecting,
-        Connected,
-        Disconnecting
-    }
 
     public class PhilipsHueSetupViewModel : BindableBase, INavigationAware
     {
@@ -38,22 +31,32 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
         
 #region Properties
 
-        private HueSetupViewModelState _state = HueSetupViewModelState.Disconnected;
-        public HueSetupViewModelState State
+        private bool _isBusy = false;
+        public bool IsBusy
         {
             get
             {
-                return this._state;
+                return this._isBusy;
             }
             set
             {
-                if (this._state != value)
-                {
-                    this._state = value;
-                }
+                this.SetProperty(ref this._isBusy, value);
             }
         }
         
+        private Exception _error = null;
+        public Exception Error
+        {
+            get
+            {
+                return this._error;
+            }
+            set
+            {
+                this.SetProperty(ref this._error, value);
+            }
+        }
+
         private string _ipAddress = PhilipsHueSetupViewModel.IpAddressDefault;
         public string IpAddress
         {
@@ -89,16 +92,6 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
 
         private readonly DelegateCommand _disconnectCommand;
         public ICommand DisconnectCommand => this._disconnectCommand;
-
-#endregion
-
-#region Events
-
-        public event EventHandler<HueSetupViewModelStateChangeEventArgs> StateChanged;
-        private void OnStateChanged(HueSetupViewModelStateChangeEventArgs args)
-        {
-            this.StateChanged?.Invoke(this, args);
-        }
 
 #endregion
 
@@ -140,63 +133,78 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
         }
 
 #region Private Methods
-
-        private void StateChange(
-            HueSetupViewModelState state, 
-            bool isInitialState = false, 
-            Exception error = null)
-        {
-            this.State = state;
-
-            this.OnStateChanged(new HueSetupViewModelStateChangeEventArgs(isInitialState, error));
-        }
-
+        
         private async void ConnectCommand_Executed()
         {
-            this.StateChange(HueSetupViewModelState.Connecting);
+            this.IsBusy = true;
+            this.Error = null;
 
-            Exception error = null;
+            await this.Connect(this.IpAddress);
+
+            this.IsBusy = false;
+        }
+
+        private async Task Connect(string ipAddress)
+        {
+            var hueApiUser = await this.HueApiUserCreateTry(ipAddress);
+            if (hueApiUser != null)
+            {
+                this._settingsProvider.HueBridgeIpAddress = ipAddress;
+                this._settingsProvider.HueApiUserId = hueApiUser.UserId;
+
+                this._hueService = await this.HueServiceGetTry(ipAddress, hueApiUser);
+                if (this._hueService != null)
+                {
+                    this.HueBridgeInfo = new HueBridgeInfo(this._hueService.HueBridgeInfo);
+                }
+            }
+        }
+
+        private async Task<HueApiUser> HueApiUserCreateTry(string ipAddress)
+        {
+            HueApiUser hueApiUser = null;
 
             try
             {
-                var ipAddress = this.IpAddress;
-
-                var hueApiUser = await 
+                hueApiUser = await 
                     this._hueServiceProvider.HueApiUserCreate(
                         ipAddress, 
                         PhilipsHueSetupViewModel.PhilipsHue_AppName
                     );
-
-                this._settingsProvider.HueBridgeIpAddress = ipAddress;
-                this._settingsProvider.HueApiUserId = hueApiUser.UserId;
-
-                this._hueService = await this._hueServiceProvider.Connect(ipAddress, hueApiUser.UserId);
-                this.HueBridgeInfo = new HueBridgeInfo(this._hueService.HueBridgeInfo);
             }
             catch(Exception ex)
             {
-                error = ex;
+                this.Error = ex;
             }
 
-            if (error != null)
+            return hueApiUser;
+        }
+
+        private async Task<IHueService> HueServiceGetTry(string ipAddress, HueApiUser hueApiUser)
+        {
+            IHueService hueService = null;
+
+            try
             {
-                this.StateChange(HueSetupViewModelState.Disconnected, error: error);
+                hueService = await this._hueServiceProvider.Connect(ipAddress, hueApiUser.UserId);
             }
-            else
+            catch(Exception ex)
             {
-                this.StateChange(HueSetupViewModelState.Connected);
+                this.Error = ex;
             }
+
+            return hueService;
         }
 
         private bool ConnectCommand_CanExecute()
         {
-            return true;
-            //return !this.IsBusy;
+            return !this.IsBusy;
         }
 
         private async void DisconnectCommand_Executed()
         {
-            //this.IsBusy = true;
+            this.IsBusy = true;
+            this.Error = null;
             
             await 
                 this._hueServiceProvider.HueApiUserDelete(
@@ -204,19 +212,20 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
                     this._settingsProvider.HueApiUserId
                 );
 
-            //this.IsBusy = false;
+            this.IsBusy = false;
         }
 
         private bool DisconnectCommand_CanExecute()
         {
-            return true;
-            //return !this.IsBusy;
+            return !this.IsBusy;
         }
+
+#endregion
+
+#region INavigationAware
 
         public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
-            var state = HueSetupViewModelState.Disconnected;
-
             if (this._hueService != null)
             {
                 // Connected state
@@ -232,8 +241,6 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             {
                 // Disconnected state
             }
-
-            this.StateChange(state, isInitialState: true);
         }
 
         public void OnNavigatingFrom(
