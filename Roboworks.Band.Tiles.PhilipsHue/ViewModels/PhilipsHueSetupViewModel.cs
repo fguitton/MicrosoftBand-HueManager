@@ -83,6 +83,30 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             }
         }
 
+        private string HueBridgeIpAddress
+        {
+            get
+            {
+                return this._settingsProvider.HueBridgeIpAddress;
+            }
+            set
+            {
+                this._settingsProvider.HueBridgeIpAddress = value;
+            }
+        }
+
+        private string HueApiUserId
+        {
+            get
+            {
+                return this._settingsProvider.HueApiUserId;
+            }
+            set
+            {
+                this._settingsProvider.HueApiUserId = value;
+            }
+        }
+
 #endregion
 
 #region Commands
@@ -139,24 +163,29 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             this.IsBusy = true;
             this.Error = null;
 
-            await this.Connect(this.IpAddress);
+            await this.HueApiUserCreateAndConnect(this.IpAddress);
 
             this.IsBusy = false;
         }
 
-        private async Task Connect(string ipAddress)
+        private async Task HueApiUserCreateAndConnect(string ipAddress)
         {
             var hueApiUser = await this.HueApiUserCreateTry(ipAddress);
             if (hueApiUser != null)
             {
-                this._settingsProvider.HueBridgeIpAddress = ipAddress;
-                this._settingsProvider.HueApiUserId = hueApiUser.UserId;
+                this.HueBridgeIpAddress = ipAddress;
+                this.HueApiUserId = hueApiUser.UserId;
 
-                this._hueService = await this.HueServiceGetTry(ipAddress, hueApiUser);
-                if (this._hueService != null)
-                {
-                    this.HueBridgeInfo = new HueBridgeInfo(this._hueService.HueBridgeInfo);
-                }
+                await this.HueApiUserConnect(ipAddress, hueApiUser.UserId);
+            }
+        }
+
+        private async Task HueApiUserConnect(string ipAddress, string hueApiUserId)
+        {
+            this._hueService = await this.HueServiceGetTry(ipAddress, hueApiUserId);
+            if (this._hueService != null)
+            {
+                this.HueBridgeInfo = new HueBridgeInfo(this._hueService.HueBridgeInfo);
             }
         }
 
@@ -180,13 +209,13 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             return hueApiUser;
         }
 
-        private async Task<IHueService> HueServiceGetTry(string ipAddress, HueApiUser hueApiUser)
+        private async Task<IHueService> HueServiceGetTry(string ipAddress, string hueApiUserId)
         {
             IHueService hueService = null;
 
             try
             {
-                hueService = await this._hueServiceProvider.Connect(ipAddress, hueApiUser.UserId);
+                hueService = await this._hueServiceProvider.Connect(ipAddress, hueApiUserId);
             }
             catch(Exception ex)
             {
@@ -206,11 +235,7 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             this.IsBusy = true;
             this.Error = null;
             
-            await 
-                this._hueServiceProvider.HueApiUserDelete(
-                    this._settingsProvider.HueBridgeIpAddress, 
-                    this._settingsProvider.HueApiUserId
-                );
+            await this._hueServiceProvider.HueApiUserDelete(this.HueBridgeIpAddress, this.HueApiUserId);
 
             this.IsBusy = false;
         }
@@ -224,22 +249,19 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
 
 #region INavigationAware
 
-        public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
-            if (this._hueService != null)
+            if (this.HueBridgeIpAddress != null && this.HueApiUserId != null)
             {
-                // Connected state
-            }
-            else if (
-                this._settingsProvider.HueBridgeIpAddress != null && 
-                this._settingsProvider.HueApiUserId != null)
-            {
-                // Connecting state
-                // Start connection
-            }
-            else
-            {
-                // Disconnected state
+                if (this._hueService == null)
+                {
+                    this.IsBusy = true;
+                    this.Error = null;
+
+                    await this.HueApiUserConnect(this.HueBridgeIpAddress, this.HueApiUserId);
+
+                    this.IsBusy = false;
+                }
             }
         }
 

@@ -8,6 +8,7 @@ using Microsoft.Practices.Unity;
 
 using Roboworks.Band.Common;
 using Roboworks.Band.Tiles.PhilipsHue.Services;
+using Roboworks.Band.Tiles.PhilipsHue.ViewModels;
 using Roboworks.Hue;
 
 namespace Roboworks.Band.Tiles.PhilipsHue
@@ -23,6 +24,8 @@ namespace Roboworks.Band.Tiles.PhilipsHue
 
             container.RegisterAsSingleton<IBandService, BandService>();
             container.RegisterAsSingleton<IHueServiceProvider, HueServiceProvider>();
+
+            container.RegisterAsSingleton<PhilipsHueSetupViewModel>();
 
             container.RegisterAsSingleton<ITileModel, PhilipsHueTileModel>(PhilipsHueTileModel.ViewName);
         }

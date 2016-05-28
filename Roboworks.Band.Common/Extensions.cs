@@ -78,6 +78,16 @@ namespace Roboworks.Band.Common
 
 #region IUnityContainer
 
+        public static void RegisterAsSingleton<T>(this IUnityContainer container)
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.RegisterAsSingleton(typeof(T));
+        }
+
         public static void RegisterAsSingleton<T>(this IUnityContainer container, string name)
         {
             if (container == null)
@@ -91,6 +101,21 @@ namespace Roboworks.Band.Common
             }
 
             container.RegisterAsSingleton(typeof(T), name);
+        }
+
+        public static void RegisterAsSingleton(this IUnityContainer container, Type type)
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            container.RegisterType(type, new ContainerControlledLifetimeManager());
         }
 
         public static void RegisterAsSingleton(this IUnityContainer container, Type type, string name)

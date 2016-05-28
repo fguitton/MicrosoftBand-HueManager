@@ -14,6 +14,7 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:iCore="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
+    DataContextChanged="Page_DataContextChanged"
 >
 
     <UserControl.Resources>
@@ -29,9 +30,9 @@
 
             <VisualStateGroup x:Name="ConnectionStates">
 
-                <VisualState x:Name="Disconnected" />
+                <VisualState x:Name="DisconnectedState" />
 
-                <VisualState x:Name="Connected">
+                <VisualState x:Name="ConnectedState">
                     <VisualState.Setters>
 
                         <Setter Target="DisconnectedView.Visibility" Value="Collapsed" />
@@ -44,9 +45,9 @@
 
             <VisualStateGroup x:Name="BusyStates">
 
-                <VisualState x:Name="NotBusy" />
+                <VisualState x:Name="NotBusyState" />
 
-                <VisualState x:Name="Busy">
+                <VisualState x:Name="BusyState">
                     <VisualState.Setters>
 
                         <Setter Target="BusyIndicator.Visibility" Value="Visible" />
@@ -57,40 +58,6 @@
             </VisualStateGroup>
 
         </VisualStateManager.VisualStateGroups>
-
-        <i:Interaction.Behaviors>
-
-            <iCore:DataTriggerBehavior 
-                Binding="{Binding 
-                    Path=HueBridgeInfo, 
-                    Mode=OneWay, 
-                    Converter={StaticResource ObjectToBooleanConverter}
-                }" 
-                Value="False"
-            >
-                <iCore:GoToStateAction StateName="Disconnected" />
-            </iCore:DataTriggerBehavior>
-
-            <iCore:DataTriggerBehavior 
-                Binding="{Binding 
-                    Path=HueBridgeInfo, 
-                    Mode=OneWay, 
-                    Converter={StaticResource ObjectToBooleanConverter}
-                }" 
-                Value="True"
-            >
-                <iCore:GoToStateAction StateName="Connected" />
-            </iCore:DataTriggerBehavior>
-
-            <iCore:DataTriggerBehavior Binding="{Binding Path=IsBusy, Mode=OneWay}" Value="True">
-                <iCore:GoToStateAction StateName="Busy" />
-            </iCore:DataTriggerBehavior>
-            
-            <iCore:DataTriggerBehavior Binding="{Binding Path=IsBusy, Mode=OneWay}" Value="False">
-                <iCore:GoToStateAction StateName="NotBusy" />
-            </iCore:DataTriggerBehavior>
-            
-        </i:Interaction.Behaviors>
 
         <Grid x:Name="ContentPanel">
 
