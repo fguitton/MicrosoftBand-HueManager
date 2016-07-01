@@ -117,6 +117,12 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
         private readonly DelegateCommand _disconnectCommand;
         public ICommand DisconnectCommand => this._disconnectCommand;
 
+        private readonly DelegateCommand _tileAddCommand;
+        public ICommand TileAddCommand => this._tileAddCommand;
+
+        private readonly DelegateCommand _tileRemoveCommand;
+        public ICommand TileRemoveCommand => this._tileRemoveCommand;
+
 #endregion
 
         public PhilipsHueSetupViewModel(
@@ -144,16 +150,16 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
             this._settingsProvider = settingsProvider;
 
             this._connectCommand = 
-                new DelegateCommand(
-                    this.ConnectCommand_Executed, 
-                    this.ConnectCommand_CanExecute
-                );
+                new DelegateCommand(this.ConnectCommand_Executed, this.ConnectCommand_CanExecute);
 
             this._disconnectCommand =
-                new DelegateCommand(
-                    this.DisconnectCommand_Executed, 
-                    this.DisconnectCommand_CanExecute
-                );
+                new DelegateCommand(this.DisconnectCommand_Executed, this.DisconnectCommand_CanExecute);
+
+            this._tileAddCommand =
+                new DelegateCommand(this.TileAddCommand_Executed, this.TileAddCommand_CanExecute);
+
+            this._tileRemoveCommand =
+                new DelegateCommand(this.TileRemoveCommand_Executed, this.TileRemoveCommand_CanExecute);
         }
 
 #region Private Methods
@@ -243,6 +249,26 @@ namespace Roboworks.Band.Tiles.PhilipsHue.ViewModels
         private bool DisconnectCommand_CanExecute()
         {
             return !this.IsBusy;
+        }
+
+        private async void TileAddCommand_Executed()
+        {
+            await this._bandService.Initialize();
+        }
+
+        private bool TileAddCommand_CanExecute()
+        {
+            return true;
+        }
+
+        private async void TileRemoveCommand_Executed()
+        {
+            await this._bandService.Initialize();
+        }
+
+        private bool TileRemoveCommand_CanExecute()
+        {
+            return true;
         }
 
 #endregion

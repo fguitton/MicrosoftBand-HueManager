@@ -105,6 +105,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <None Include="SampleData\ConnectedViewSampleData\ConnectedViewSampleData.xsd" />
     <None Include="Services\HueLightBulbPage.msbtl">
       <Generator>MSBandLayoutCodeGenerator</Generator>
       <LastGenOutput>HueLightBulbPage.cs</LastGenOutput>
@@ -119,6 +120,9 @@
       <DependentUpon>DisconnectedView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ExceptionToErrorInfoConverter.cs" />
+    <Compile Include="SampleData\ConnectedViewSampleData\ConnectedViewSampleData.xaml.cs">
+      <DependentUpon>ConnectedViewSampleData.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\HueLightBulbPage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -144,6 +148,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <DesignTimeOnly Include="SampleData\ConnectedViewSampleData\ConnectedViewSampleData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
     <Page Include="Views\PhilipsHueSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +167,7 @@
       <Name>Roboworks.Hue</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

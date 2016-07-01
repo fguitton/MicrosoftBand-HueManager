@@ -5,72 +5,121 @@
     xmlns:local="using:Roboworks.Band.Tiles.PhilipsHue.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:SampleData="using:Blend.SampleData.ConnectedViewSampleData"
     mc:Ignorable="d"
     d:DesignWidth="300"
     d:DesignHeight="600"
 >
 
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <SampleData:ConnectedViewSampleData x:Key="ConnectedViewSampleData" d:IsDataSource="True"/>
+
+            <Style x:Key="InfoTextStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="8,8,8,8" />
+            </Style>
+
+            <Style 
+                x:Key="InfoNameTextStyle" 
+                TargetType="TextBlock" 
+                BasedOn="{StaticResource InfoTextStyle}"
+            >
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+
+            <Style 
+                x:Key="InfoValueTextStyle" 
+                TargetType="TextBlock" 
+                BasedOn="{StaticResource InfoTextStyle}"
+            >
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <!--<Grid.Transitions>
-            <TransitionCollection>
+        <StackPanel 
+            Orientation="Vertical"
+            VerticalAlignment="Center"
+        >
 
-                <EntranceThemeTransition 
-                    FromHorizontalOffset="40"
-                    FromVerticalOffset="0" 
+            <d:DataContext>
+                <Binding Source="{StaticResource ConnectedViewSampleData}"/>
+            </d:DataContext>
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock 
+        		    Grid.Row="0"
+        		    Grid.Column="0"
+        		    Text="Bridge name:"
+                    Style="{StaticResource InfoNameTextStyle}"
                 />
 
-            </TransitionCollection>
-        </Grid.Transitions>-->
-        
-        <Grid Margin="8,32">
+                <TextBlock 
+        		    Grid.Row="0"
+        		    Grid.Column="1"
+        		    Text="{Binding Path=HueBridgeInfo.Name, Mode=OneWay}" 
+                    Style="{StaticResource InfoValueTextStyle}"
+                />
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <TextBlock 
+        		    Grid.Row="1"
+        		    Grid.Column="0"
+        		    Text="Bridge ID:" 
+        		    Style="{StaticResource InfoNameTextStyle}"
+                />
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+                <TextBlock 
+        		    Grid.Row="1"
+        		    Grid.Column="1"
+        		    Text="{Binding Path=HueBridgeInfo.Id, Mode=OneWay}" 
+        		    Style="{StaticResource InfoValueTextStyle}"
+                />
 
-            <TextBlock 
-        		Grid.Row="0"
-        		Grid.Column="0"
-        		Text="Bridge name:" 
-        		Margin="0,0,8,0"
-            />
+            </Grid>
 
-            <TextBlock 
-        		Grid.Row="0"
-        		Grid.Column="1"
-        		Text="{Binding HueBridgeInfo.Name, Mode=OneWay}" 
-        		TextTrimming="CharacterEllipsis"
-            />
+            <StackPanel Orientation="Vertical" Margin="0,32,0,0">
 
-            <TextBlock 
-        		Grid.Row="1"
-        		Grid.Column="0"
-        		Text="Bridge ID:" 
-        		Margin="0,8,8,0"
-            />
+                <Button 
+                    Margin="8"
+                    Content="Add Tile"
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind Path=TileAddCommand, Mode=OneWay}"
+                />
 
-            <TextBlock 
-        		Grid.Row="1"
-        		Grid.Column="1"
-        		Text="{Binding HueBridgeInfo.Id, Mode=OneWay}" 
-        		Margin="0,8,8,0"
-        		TextTrimming="CharacterEllipsis"
-            />
+                <Button 
+                    Margin="8"
+                    Content="Remove Tile"
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind Path=TileRemoveCommand, Mode=OneWay}"
+                />
 
-        </Grid>
+            </StackPanel>
 
-        <!--<Border
-        	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        	Visibility="{Binding HueBridgeInfo, Converter={StaticResource NullableToVisibilityConverterInverted}, Mode=OneWay}"
-        />-->
+            <!--<Border
+        	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        	    Visibility="{Binding HueBridgeInfo, Converter={StaticResource NullableToVisibilityConverterInverted}, Mode=OneWay}"
+            />-->
+
+        </StackPanel>
 
     </Grid>
-    
+
 </UserControl>

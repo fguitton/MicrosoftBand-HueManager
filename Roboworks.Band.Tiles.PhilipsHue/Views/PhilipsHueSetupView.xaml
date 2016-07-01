@@ -87,6 +87,8 @@
                 x:Name="ConnectedView"
                 Grid.Row="1"
                 Visibility="Collapsed"
+                TileAddCommand="{Binding Path=TileAddCommand, Mode=OneTime}"
+                TileRemoveCommand="{Binding Path=TileRemoveCommand, Mode=OneTime}"
             />
 
         </Grid>
